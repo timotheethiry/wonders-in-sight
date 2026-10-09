@@ -1,5 +1,5 @@
 import PhotoGallery from "@/components/PhotoGallery";
-import { photos } from "@/data/photos";
+import { getContentfulPhotos } from "@/lib/contentful";
 import { themes } from "@/data/themes";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
@@ -9,6 +9,7 @@ type ThemePageProps = {
 }
 
 async function ThemeContent({ params }: ThemePageProps) {
+    const photos = await getContentfulPhotos();
     const { slug } = await params;
 
     const theme = themes.find((theme) => theme.slug === slug);

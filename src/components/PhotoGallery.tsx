@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 
 export type Photo = {
-    id: number;
+    id: string;
     title: string;
     lieu: string;
     theme: string;
@@ -39,17 +39,17 @@ export default function PhotoGallery({ photos }: PhotoGalleryProps) {
     }
 
     function closePhoto() {
-            if (isClosing) return;
+        if (isClosing) return;
 
         setIsVisible(false);
         setIsClosing(true);
     }
 
     function handleDialogClose() {
-    setSelectedPhoto(null);
-    setIsVisible(false);
-    setIsClosing(false);
-}
+        setSelectedPhoto(null);
+        setIsVisible(false);
+        setIsClosing(false);
+    }
 
     useEffect(() => {
         if (!isClosing) return;
@@ -78,7 +78,7 @@ export default function PhotoGallery({ photos }: PhotoGalleryProps) {
                             <img
                                 src={photo.image}
                                 alt={photo.alt}
-                                loading={photo.id <= 4 ? "eager" : "lazy"}
+                                loading={photos.indexOf(photo) <= 4 ? "eager" : "lazy"}
                                 className="block h-auto w-full"
                             />
                         </button>
