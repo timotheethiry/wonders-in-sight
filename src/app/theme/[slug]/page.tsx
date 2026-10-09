@@ -20,7 +20,13 @@ async function ThemeContent({ params }: ThemePageProps) {
     const themePhotos = photos.filter((photo) => photo.theme === slug);
 
 
-    return (<main> <h1>{theme.label}</h1>
+    return (<main className="mx-auto max-w-7xl px-5 py-12 sm:px-8 sm:py-16 lg:px-12">
+        <section className="mb-10 max-w-2xl sm:mb-14">
+            <h1 className="font-serif text-4xl tracking-tight text-foreground sm:text-5xl lg:text-6xl">{theme.label}</h1>
+            <p className="mt-5 max-w-xl text-base leading-7 text-muted sm:text-lg sm:leading-8">
+                {theme.description}
+            </p>
+        </section>
         <PhotoGallery photos={themePhotos} /> </main>
     );
 }
