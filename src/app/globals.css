@@ -36,3 +36,34 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+dialog {
+    opacity: 0;
+    transform: scale(0.97);
+    transition:
+        opacity 300ms ease,
+        transform 300ms ease;
+}
+
+dialog.is-visible {
+    opacity: 1;
+    transform: scale(1);
+}
+
+dialog::backdrop {
+    background-color: rgb(0 0 0 / 0%);
+    transition: background-color 300ms ease;
+}
+
+dialog.is-visible::backdrop {
+    background-color: rgb(0 0 0 / 85%);
+}
+
+dialog.is-closing {
+    opacity: 0;
+    transform: scale(0.97);
+}
+
+dialog.is-closing::backdrop {
+    background-color: rgb(0 0 0 / 0%);
+}

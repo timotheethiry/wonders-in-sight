@@ -1,3 +1,4 @@
+import PhotoGallery from "@/components/PhotoGallery";
 import Link from "next/link";
 
 const themes = [
@@ -12,6 +13,7 @@ const photos = [
     id: 1,
     title: "Lumière du matin",
     theme: "Paysages",
+    lieu: "lieu",
     image:
       "https://images.unsplash.com/photo-1470770841072-f978cf4d019e",
     alt: "Montagnes reflétées dans un lac au lever du jour",
@@ -20,6 +22,7 @@ const photos = [
     id: 2,
     title: "Lignes urbaines",
     theme: "Architecture",
+    lieu: "lieu",
     image:
       "https://images.unsplash.com/photo-1487958449943-2429e8be8625",
     alt: "Architecture contemporaine aux lignes épurées",
@@ -28,6 +31,7 @@ const photos = [
     id: 3,
     title: "Horizon lointain",
     theme: "Voyages",
+    lieu: "lieu",
     image:
       "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b",
     alt: "Crêtes montagneuses sous un ciel lumineux",
@@ -36,6 +40,7 @@ const photos = [
     id: 4,
     title: "Silence",
     theme: "Noir et blanc",
+    lieu: "lieu",
     image:
       "https://images.unsplash.com/photo-1518837695005-2083093ee35b",
     alt: "Vagues de l'océan",
@@ -44,6 +49,7 @@ const photos = [
     id: 5,
     title: "Reflets",
     theme: "Paysages",
+    lieu: "lieu",
     image:
       "https://images.unsplash.com/photo-1472396961693-142e6e269027",
     alt: "Cerfs dans un paysage naturel",
@@ -52,6 +58,7 @@ const photos = [
     id: 6,
     title: "Ailleurs",
     theme: "Voyages",
+    lieu: "lieu",
     image:
       "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee",
     alt: "Paysage naturel baigné de lumière",
@@ -60,6 +67,7 @@ const photos = [
     id: 7,
     title: "Perspective",
     theme: "Architecture",
+    lieu: "lieu",
     image:
       "https://images.unsplash.com/photo-1511818966892-d7d671e672a2",
     alt: "Bâtiment contemporain photographié en contre-plongée",
@@ -68,6 +76,7 @@ const photos = [
     id: 8,
     title: "Matière",
     theme: "Noir et blanc",
+    lieu: "lieu",
     image:
       "https://images.unsplash.com/photo-1519608487953-e999c86e7455",
     alt: "Ciel nocturne et paysage sombre",
@@ -109,23 +118,7 @@ export default function Home() {
         </nav>
 
         <section id="galerie" aria-label="Sélection de photographies" className="px-3 py-5 sm:px-5 sm:py-7 lg:px-8">
-          <div className="columns-2 gap-3 sm:columns-3 sm:gap-4 lg:columns-4 lg:gap-5">
-            {photos.map((photo) => (
-              <article key={photo.id} className="mb-3 break-inside-avoid sm:mb-4 lg:mb-5">
-                 <img
-                src={photo.image}
-                alt={photo.alt}
-                loading={photo.id <= 4 ? "eager" : "lazy"}
-                className="block h-auto w-full"
-              />
-                {/* <div className="flex items-baseline justify-between gap-2 py-2">
-                  
-                <h2 className="text-sm">{photo.title}</h2>
-                <span className="text-xs text-muted">{photo.theme}</span>
-                </div> */}
-              </article>
-            ))}
-          </div>
+          <PhotoGallery photos={photos} />
         </section>
 
 
