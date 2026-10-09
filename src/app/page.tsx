@@ -1,12 +1,4 @@
 import PhotoGallery from "@/components/PhotoGallery";
-import Link from "next/link";
-
-const themes = [
-  { label: "Paysages", slug: "paysages" },
-  { label: "Architecture", slug: "architecture" },
-  { label: "Voyages", slug: "voyages" },
-  { label: "Noir et blanc", slug: "noir-et-blanc" },
-];
 
 const photos = [
   {
@@ -54,7 +46,7 @@ const photos = [
       "https://images.unsplash.com/photo-1472396961693-142e6e269027",
     alt: "Cerfs dans un paysage naturel",
   },
-    {
+  {
     id: 6,
     title: "Ailleurs",
     theme: "Voyages",
@@ -86,45 +78,11 @@ const photos = [
 export default function Home() {
   return (
     <main className="min-h-screen bg-background text-foreground">
-      <header className="flex items-center justify-between border-b border-border px-5 py-5 sm:px-8 lg:px-12">
-        <Link href="/" className="font-serif text-2xl tracking-tight"
-          aria-label="Accueil de la galerie">
-          Wonders In Sight<span className="text-muted">.</span>
-        </Link>
 
-        <nav aria-label="Navigation principale" className="flex items-center gap-5 text-sm text-muted sm:gap-8">
-          <a href="#galerie" className="transition-colors hover:text-foreground">Photographies</a>
-          <a href="#a-propos" className="transition-colors hover:text-foreground">À propos</a>
-        </nav>
-      </header>
+      <section id="galerie" aria-label="Sélection de photographies" className="px-3 py-5 sm:px-5 sm:py-7 lg:px-8">
+        <PhotoGallery photos={photos} />
+      </section>
 
-      
-        <nav aria-label="Thèmes photographiques"  className="flex gap-6 overflow-x-auto border-b border-border px-5 py-4 text-sm whitespace-nowrap sm:px-8 lg:px-12">
-          {themes.map((theme, index) => (
-            <Link
-              key={theme.slug}
-              href={`/theme/${theme.slug}`
-              }
-               aria-current={index === 0 ? "page" : undefined}
-            className={
-              index === 0
-                ? "shrink-0 text-foreground"
-                : "shrink-0 text-muted transition-colors hover:text-foreground"
-            }
-            >
-              {theme.label}
-            </Link>
-          ))}
-        </nav>
-
-        <section id="galerie" aria-label="Sélection de photographies" className="px-3 py-5 sm:px-5 sm:py-7 lg:px-8">
-          <PhotoGallery photos={photos} />
-        </section>
-
-
-      <footer id="a-propos" className="mt-8 border-t border-border px-5 py-8 text-sm text-muted sm:px-8 lg:px-12">
-        <p>Une collection personnelle de photographies.</p>
-      </footer>
     </main>
   );
 }
