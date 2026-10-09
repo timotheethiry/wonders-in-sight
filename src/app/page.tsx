@@ -1,10 +1,10 @@
+import Link from "next/link";
 
 const themes = [
-  "Tout",
-  "Paysages",
-  "Architecture",
-  "Voyages",
-  "Noir et blanc",
+  { label: "Paysages", slug: "paysages" },
+  { label: "Architecture", slug: "architecture" },
+  { label: "Voyages", slug: "voyages" },
+  { label: "Noir et blanc", slug: "noir-et-blanc" },
 ];
 
 const photos = [
@@ -78,10 +78,10 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-background text-foreground">
       <header className="flex items-center justify-between border-b border-border px-5 py-5 sm:px-8 lg:px-12">
-        <a href="/" className="font-serif text-2xl tracking-tight"
+        <Link href="/" className="font-serif text-2xl tracking-tight"
           aria-label="Accueil de la galerie">
           Wonders In Sight<span className="text-muted">.</span>
-        </a>
+        </Link>
 
         <nav aria-label="Navigation principale" className="flex items-center gap-5 text-sm text-muted sm:gap-8">
           <a href="#galerie" className="transition-colors hover:text-foreground">Photographies</a>
@@ -92,12 +92,9 @@ export default function Home() {
       
         <nav aria-label="Thèmes photographiques"  className="flex gap-6 overflow-x-auto border-b border-border px-5 py-4 text-sm whitespace-nowrap sm:px-8 lg:px-12">
           {themes.map((theme, index) => (
-            <a
-              key={theme}
-              href={
-                theme === "Tout"
-                  ? "#galerie"
-                  : `#theme-${theme.toLowerCase().replaceAll(" ", "-")}`
+            <Link
+              key={theme.slug}
+              href={`/theme/${theme.slug}`
               }
                aria-current={index === 0 ? "page" : undefined}
             className={
@@ -106,8 +103,8 @@ export default function Home() {
                 : "shrink-0 text-muted transition-colors hover:text-foreground"
             }
             >
-              {theme}
-            </a>
+              {theme.label}
+            </Link>
           ))}
         </nav>
 
