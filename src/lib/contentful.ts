@@ -70,7 +70,8 @@ export async function getContentfulPhotos() {
         image: imageUrl.startsWith("//")
           ? `https:${imageUrl}`
           : imageUrl,
-        alt: asset.fields.title || asset.fields.description || "",
+        alt: typeof entry.fields.alt === "string" ? entry.fields.alt : "",
+        narrative : typeof entry.fields.narrative === "string" ? entry.fields.narrative : ""
       }
     ]
   });

@@ -9,6 +9,7 @@ export type Photo = {
     theme: string;
     image: string;
     alt: string;
+    narrative: string;
 };
 
 type PhotoGalleryProps = {
@@ -124,6 +125,9 @@ export default function PhotoGallery({ photos }: PhotoGalleryProps) {
                                 </span>
                             </h2>
                         </div>
+                        {selectedPhoto.narrative && (<p className="mt-2 max-w-prose text-sm leading-6 text-white/70">
+                            {selectedPhoto.narrative}
+                        </p>)}
                     </div>
 
                 )}
