@@ -8,6 +8,7 @@ export type Photo = {
     lieu: string;
     theme: string;
     image: string;
+    imageFull: string;
     alt: string;
     narrative: string;
 };
@@ -112,7 +113,7 @@ export default function PhotoGallery({ photos }: PhotoGalleryProps) {
                         </button>
 
                         <img
-                            src={selectedPhoto.image}
+                            src={selectedPhoto.imageFull}
                             alt={selectedPhoto.alt}
                             className="block max-h-[75dvh] max-w-[95vw] object-contain"
                         />

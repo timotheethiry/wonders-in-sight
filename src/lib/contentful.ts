@@ -18,6 +18,19 @@ const client = createClient({
   environment,
 });
 
+function getOptimizedImageUrl(url: string, width: number) {
+  const normalizedUrl = url.startsWith("//")
+    ? `https:${url}`
+    : url;
+
+  const optimizedUrl = new URL(normalizedUrl);
+  optimizedUrl.searchParams.set("w", String(width));
+  optimizedUrl.searchParams.set("fm", "webp");
+  // optimizedUrl.searchParams.set("q", "85"); conversion quality
+
+  return optimizedUrl.toString();
+}
+
 export async function getContentfulPhotos() {
   const response = await client.getEntries({
     content_type: "photoWondersInSight",
@@ -67,9 +80,8 @@ export async function getContentfulPhotos() {
           "lon" in entry.fields.location
             ? `${entry.fields.location.lat}, ${entry.fields.location.lon}`
             : asset.fields.description || "",
-        image: imageUrl.startsWith("//")
-          ? `https:${imageUrl}`
-          : imageUrl,
+        image: getOptimizedImageUrl(imageUrl, 800),
+        imageFull: getOptimizedImageUrl(imageUrl, 1600),
         alt: typeof entry.fields.alt === "string" ? entry.fields.alt : "",
         narrative : typeof entry.fields.narrative === "string" ? entry.fields.narrative : ""
       }
