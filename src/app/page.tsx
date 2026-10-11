@@ -1,6 +1,11 @@
 import { Suspense } from "react";
 import PhotoGallery from "@/components/PhotoGallery";
 import { getContentfulPhotos } from "@/lib/contentful";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Photographies et regards sur le monde",
+};
 
 async function GalleryContent() {
   const photos = await getContentfulPhotos();
