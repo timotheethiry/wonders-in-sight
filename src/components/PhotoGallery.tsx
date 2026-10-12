@@ -98,40 +98,66 @@ export default function PhotoGallery({ photos }: PhotoGalleryProps) {
                     event.preventDefault();
                     closePhoto();
                 }}
-                className={`m-auto max-h-[90dvh] max-w-[95vw] bg-transparent p-0 text-white ${isVisible ? "is-visible" : ""} ${isClosing ? "is-closing" : ""}`}
+                className={`m-auto h-fit max-h-[90dvh] max-w-[95vw] overflow-hidden bg-transparent p-0 text-white ${isVisible ? "is-visible" : ""} ${isClosing ? "is-closing" : ""}`}
                 aria-label="Photographie agrandie"
             >
+
+
                 {selectedPhoto && (
-                    <div className="flex flex-col">
+                    <div className="flex max-h-[90dvh] w-[95vw] flex-col md:w-fit">
+
                         <button
                             type="button"
                             onClick={closePhoto}
                             aria-label="Fermer la photographie"
-                            className="mb-2 self-end px-3 py-2 text-sm text-white/40 hover:opacity-70"
+                            className="mb-2 shrink-0 self-end px-3 py-2 text-sm text-white/40 hover:opacity-70"
                         >
                             Fermer ✕
                         </button>
 
-                        <img
-                            src={selectedPhoto.imageFull}
-                            alt={selectedPhoto.alt}
-                            className="block max-h-[75dvh] max-w-[95vw] object-contain"
-                        />
 
-                        <div className="px-1 py-3">
-                            <h2 className="font-serif text-lg">
-                                {selectedPhoto.title}
-                                <span className="text-white/70">
-                                    {selectedPhoto.lieu && `, ${selectedPhoto.lieu}`}
-                                </span>
-                            </h2>
+                        <div className={`flex min-h-0 flex-1 flex-col gap-4 overflow-hidden ${selectedPhoto.narrative
+                            ? "md:flex-row md:gap-8"
+                            : "md:items-start"
+                            }`}>
+
+                            <div className="flex min-h-0 shrink-0 items-center justify-center md:flex-1">
+                                <img
+                                    src={selectedPhoto.imageFull}
+                                    alt={selectedPhoto.alt}
+                                    className="block max-h-[60dvh] max-w-full object-contain md:max-h-[75dvh]"
+                                />
+                            </div>
+
+
+                            <div className={`flex min-h-0 flex-1 flex-col ${selectedPhoto.narrative
+                                ? "md:w-[22rem] md:flex-none"
+                                : ""
+                                }`}>
+                                <div className="mb-4 shrink-0">
+                                    <h2 className="font-serif text-lg">
+                                        {selectedPhoto.title}
+                                        {selectedPhoto.lieu && (
+                                            <span className="text-white/70">
+                                                {`, ${selectedPhoto.lieu}`}
+                                            </span>
+                                        )}
+                                    </h2>
+                                </div>
+
+                                {selectedPhoto.narrative && (
+                                    <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain pr-2">
+                                        <p className="max-w-pros text-left text-sm leading-7 text-white/70">
+                                            {selectedPhoto.narrative}
+                                        </p>
+                                    </div>
+                                )}
+                            </div>
                         </div>
-                        {selectedPhoto.narrative && (<p className="mt-2 max-w-prose text-sm leading-6 text-white/70">
-                            {selectedPhoto.narrative}
-                        </p>)}
                     </div>
-
                 )}
+
+
             </dialog>
         </>
     );
