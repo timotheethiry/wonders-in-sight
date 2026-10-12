@@ -65,7 +65,7 @@ export default function PhotoGallery({ photos }: PhotoGalleryProps) {
 
     return (
         <>
-            <div className="columns-2 gap-3 sm:columns-3 sm:gap-4 lg:columns-4 lg:gap-5">
+            <div className="columns-2 gap-3 max-w-9/10 mx-auto md:columns-3 md:gap-4 md:max-w-5/6 lg:columns-4 lg:gap-5 lg:max-w-6/7">
                 {photos.map((photo) => (
                     <article
                         key={photo.id}
@@ -75,13 +75,13 @@ export default function PhotoGallery({ photos }: PhotoGalleryProps) {
                             type="button"
                             onClick={() => openPhoto(photo)}
                             aria-label={`Agrandir : ${photo.title}`}
-                            className="block w-full cursor-zoom-in"
+                            className="block w-full cursor-pointer"
                         >
                             <img
                                 src={photo.image}
                                 alt={photo.alt}
                                 loading={photos.indexOf(photo) <= 4 ? "eager" : "lazy"}
-                                className="block h-auto w-full"
+                                className="block h-auto w-full transition-[filter] duration-300 ease-in-out hover:brightness-85 focus-visible:brightness-85"
                             />
                         </button>
                     </article>
