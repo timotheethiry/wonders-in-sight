@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import PhotoGallery from "@/components/PhotoGallery";
 import { getContentfulPhotos } from "@/lib/contentful";
 import { Metadata } from "next";
+import HomeEntrance from "@/components/HomeEntrance";
 
 export const metadata: Metadata = {
   title: "Photographies et regards sur le monde",
@@ -10,7 +11,9 @@ export const metadata: Metadata = {
 async function GalleryContent() {
   const photos = await getContentfulPhotos();
 
-  return <PhotoGallery photos={photos} />;
+  return <HomeEntrance>
+    <PhotoGallery photos={photos} />
+  </HomeEntrance>
 }
 
 export default function Home() {

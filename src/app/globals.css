@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+
+/* --- Variables --- */
+
 :root {
   color-scheme: light;
   --background: #f7f6f2;
@@ -8,6 +11,9 @@
   --muted: #686868;
   --border: #d6d3cd;
 }
+
+
+/* --- Theme Colors --- */
 
 @theme inline {
   --color-background: var(--background);
@@ -31,11 +37,17 @@
   }
 }
 
+
+/* --- Common --- */
+
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+
+/* --- Photograph Modal --- */
 
 dialog {
     opacity: 0;
@@ -67,3 +79,66 @@ dialog.is-closing {
 dialog.is-closing::backdrop {
     background-color: rgb(0 0 0 / 0%);
 }
+
+
+/* --- Entrance & nav page animation --- */
+
+/* Entrée du nom du site */
+.site-enter {
+    animation: site-entrance 900ms ease-in-out both;
+}
+
+/* Entrée différée de la galerie d'accueil */
+.home-gallery-enter {
+    animation: gallery-enter 600ms ease-out 180ms both;
+}
+
+/* Transition du contenu lors d'une navigation */
+.page-enter {
+    animation: page-enter 900ms ease-out 180ms both;
+}
+
+@keyframes site-entrance {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes gallery-enter {
+    from {
+        opacity: 0;
+        /* transform: translateY(10px); */
+    }
+
+    to {
+        opacity: 1;
+        /* transform: translateY(0); */
+    }
+}
+
+@keyframes page-enter {
+    from {
+        opacity: 0;
+        /* transform: translateY(6px); */
+    }
+
+    to {
+        opacity: 1;
+        /* transform: translateY(0); */
+    }
+}
+
+/* Respect des préférences d'accessibilité */
+/* @media (prefers-reduced-motion: reduce) {
+    .site-brand-enter,
+    .home-gallery-enter,
+    .page-enter {
+        animation: none;
+    }
+} */

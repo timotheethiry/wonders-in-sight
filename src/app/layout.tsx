@@ -3,6 +3,8 @@ import "./globals.css";
 import { themes } from "@/data/themes";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import PageTransition from "@/components/PageTransition";
+import { Suspense } from "react";
 
 export const metadata: Metadata = {
   title: {
@@ -29,9 +31,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     >
       <body className="flex min-h-full flex-col">
         <Header themes={themes} />
-
         {children}
-
         <Footer />
       </body>
     </html>
