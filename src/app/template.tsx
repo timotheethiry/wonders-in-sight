@@ -3,5 +3,5 @@ export default function Template({
 }: {
     children: React.ReactNode;
 }) {
-    return <div className="page-enter">{children}</div>;
+    return <div className="page-enter flex-1">{children}</div>;
 }

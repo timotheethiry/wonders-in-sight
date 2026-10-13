@@ -3,6 +3,7 @@ import PhotoGallery from "@/components/PhotoGallery";
 import { getContentfulPhotos } from "@/lib/contentful";
 import { Metadata } from "next";
 import HomeEntrance from "@/components/HomeEntrance";
+import GallerySkeleton from "@/components/GallerySkeleton";
 
 export const metadata: Metadata = {
   title: "Photographies et regards sur le monde",
@@ -25,11 +26,7 @@ export default function Home() {
         className="px-3 py-5 sm:px-5 sm:py-7 lg:px-8"
       >
         <Suspense
-          fallback={
-            <p className="text-sm text-muted">
-              Chargement des photographies…
-            </p>
-          }
+          fallback={<GallerySkeleton />}
         >
           <GalleryContent />
         </Suspense>
