@@ -88,3 +88,65 @@ export async function getContentfulPhotos() {
     ]
   });
 }
+
+export async function getHomePhotos() {
+  const response = await client.getEntries({
+    content_type: "photoWondersInSight",
+    "fields.featuredOnHome": true,
+    include: 1,
+  });
+
+  return response.items.flatMap((entry) => {
+    const photo = entry.fields.photo;
+
+    if (!photo || typeof photo !== "object" || !("fields" in photo)) {
+      return [];
+    }
+
+    const asset = photo as {
+      fields: {
+        title?: string;
+        description?: string;
+        file?: {
+          url?: string;
+        };
+      };
+    };
+
+    const imageUrl = asset.fields.file?.url;
+
+    if (!imageUrl) {
+      return [];
+    }
+
+    const categories = entry.fields.category;
+    const theme = Array.isArray(categories)
+      ? categories[0]
+      : categories;
+
+    return [
+      {
+        id: entry.sys.id,
+        title:
+          typeof entry.fields.subject === "string"
+            ? entry.fields.subject
+            : asset.fields.title || "Photographie sans titre",
+        theme: typeof theme === "string" ? theme : "",
+        lieu:
+          typeof entry.fields.location === "object" &&
+          entry.fields.location !== null &&
+          "lat" in entry.fields.location &&
+          "lon" in entry.fields.location
+            ? `${entry.fields.location.lat}, ${entry.fields.location.lon}`
+            : asset.fields.description || "",
+        image: getOptimizedImageUrl(imageUrl, 800),
+        imageFull: getOptimizedImageUrl(imageUrl, 1600),
+        alt: typeof entry.fields.alt === "string" ? entry.fields.alt : "",
+        narrative:
+          typeof entry.fields.narrative === "string"
+            ? entry.fields.narrative
+            : "",
+      },
+    ];
+  });
+}

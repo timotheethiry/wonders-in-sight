@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import PhotoGallery from "@/components/PhotoGallery";
-import { getContentfulPhotos } from "@/lib/contentful";
+import { getHomePhotos } from "@/lib/contentful";
 import { Metadata } from "next";
 import HomeEntrance from "@/components/HomeEntrance";
 import GallerySkeleton from "@/components/GallerySkeleton";
@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 };
 
 async function GalleryContent() {
-  const photos = await getContentfulPhotos();
+  const photos = await getHomePhotos();
 
   return <HomeEntrance>
     <PhotoGallery photos={photos} />
