@@ -73,13 +73,17 @@ export async function getContentfulPhotos() {
             ? entry.fields.subject
             : asset.fields.title || "Photographie sans titre",
         theme: typeof theme === "string" ? theme : "",
-        lieu:
+        location:
           typeof entry.fields.location === "object" &&
           entry.fields.location !== null &&
           "lat" in entry.fields.location &&
           "lon" in entry.fields.location
             ? `${entry.fields.location.lat}, ${entry.fields.location.lon}`
-            : asset.fields.description || "",
+            : "",
+            locationName:
+  typeof entry.fields.locationName === "string"
+    ? entry.fields.locationName
+    : "",
         image: getOptimizedImageUrl(imageUrl, 800),
         imageFull: getOptimizedImageUrl(imageUrl, 1600),
         alt: typeof entry.fields.alt === "string" ? entry.fields.alt : "",
@@ -132,13 +136,17 @@ export async function getHomePhotos() {
             ? entry.fields.subject
             : asset.fields.title || "Photographie sans titre",
         theme: typeof theme === "string" ? theme : "",
-        lieu:
+        location:
           typeof entry.fields.location === "object" &&
           entry.fields.location !== null &&
           "lat" in entry.fields.location &&
           "lon" in entry.fields.location
             ? `${entry.fields.location.lat}, ${entry.fields.location.lon}`
-            : asset.fields.description || "",
+            : "",
+            locationName:
+  typeof entry.fields.locationName === "string"
+    ? entry.fields.locationName
+    : "",
         image: getOptimizedImageUrl(imageUrl, 800),
         imageFull: getOptimizedImageUrl(imageUrl, 1600),
         alt: typeof entry.fields.alt === "string" ? entry.fields.alt : "",

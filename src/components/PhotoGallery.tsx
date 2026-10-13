@@ -5,7 +5,8 @@ import { useEffect, useRef, useState } from "react";
 export type Photo = {
     id: string;
     title: string;
-    lieu: string;
+    location: string;
+    locationName: string;
     theme: string;
     image: string;
     imageFull: string;
@@ -135,11 +136,11 @@ export default function PhotoGallery({ photos }: PhotoGalleryProps) {
                                 : ""
                                 }`}>
                                 <div className="mb-4 shrink-0">
-                                    <h2 className="font-serif text-lg">
+                                    <h2 className="font-serif text-lg italic">
                                         {selectedPhoto.title}
-                                        {selectedPhoto.lieu && (
-                                            <span className="text-white/70">
-                                                {`, ${selectedPhoto.lieu}`}
+                                        {selectedPhoto.locationName && (
+                                            <span className="text-base text-white/70 not-italic">
+                                                {`, ${selectedPhoto.locationName}`}
                                             </span>
                                         )}
                                     </h2>
