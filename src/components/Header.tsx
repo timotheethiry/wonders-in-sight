@@ -1,5 +1,6 @@
 
 import Link from "next/link";
+import ThemeToggle from "./ThemeToggle";
 
 type Theme = {
     slug: string;
@@ -24,7 +25,7 @@ export default function Header({ themes }: HeaderProps) {
                 <nav
                     aria-label="Navigation principale"
                     className="flex items-center gap-5 text-sm text-muted sm:gap-8">
-                    <Link href="/#galerie" className="transition-colors hover:text-foreground">Photographies</Link>
+                    <ThemeToggle />
                     <Link href="/#a-propos" className="transition-colors hover:text-foreground">À propos</Link>
                 </nav>
             </header>

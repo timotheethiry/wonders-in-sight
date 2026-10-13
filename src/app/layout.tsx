@@ -3,8 +3,7 @@ import "./globals.css";
 import { themes } from "@/data/themes";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import PageTransition from "@/components/PageTransition";
-import { Suspense } from "react";
+import Script from "next/script";
 
 export const metadata: Metadata = {
   title: {
@@ -28,7 +27,25 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html
       lang="fr"
       className={` h-full antialiased`}
+      suppressHydrationWarning
     >
+      <head>
+        <Script
+          id="wis-theme-init"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+          try {
+            const savedTheme = localStorage.getItem("wis-theme");
+            const theme = savedTheme === "light" ? "light" : "dark";
+            document.documentElement.classList.add(theme);
+          } catch {
+            document.documentElement.classList.add("dark");
+          }
+        `,
+          }}
+        />
+      </head>
       <body className="flex min-h-full flex-col">
         <Header themes={themes} />
         {children}

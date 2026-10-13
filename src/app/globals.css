@@ -4,6 +4,15 @@
 /* --- Variables --- */
 
 :root {
+    color-scheme: dark;
+    --background: #111111;
+    --foreground: #f2f0eb;
+    --surface: #1b1b1b;
+    --muted: #a5a5a5;
+    --border: #777777;
+  }
+
+:root.light {
   color-scheme: light;
   --background: #f7f6f2;
   --foreground: #171717;
@@ -11,6 +20,54 @@
   --muted: #686868;
   --border: #d6d3cd;
 }
+
+
+/* --- Animation des variables de thème --- */
+/* 
+@property --background {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #111111;
+}
+
+@property --foreground {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #f2f0eb;
+}
+
+@property --surface {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #1b1b1b;
+}
+
+@property --muted {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #a5a5a5;
+}
+
+@property --border {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #777777;
+} */
+
+
+/* --- Transition des couleurs de l'interface --- */
+/* 
+body,
+header,
+nav,
+footer,
+main,
+article {
+  transition:
+    background-color 700ms ease,
+    color 700ms ease,
+    border-color 700ms ease;
+} */
 
 
 /* --- Theme Colors --- */
@@ -26,17 +83,6 @@
   --font-serif: Georgia, "Times New Roman", serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    color-scheme: dark;
-    --background: #111111;
-    --foreground: #f2f0eb;
-    --surface: #1b1b1b;
-    --muted: #a5a5a5;
-    --border: #777777;
-  }
-}
-
 
 /* --- Common --- */
 
@@ -44,7 +90,21 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+  transition: background-color 1000ms ease, color 1000ms ease;
 }
+
+body,
+header,
+nav,
+main,
+footer,
+article,
+button {
+  transition-property: background-color, color, border-color;
+  transition-duration: 1000ms;
+  transition-timing-function: ease;
+}
+
 
 
 /* --- Photograph Modal --- */
@@ -135,10 +195,24 @@ dialog.is-closing::backdrop {
 }
 
 /* Respect des préférences d'accessibilité */
-/* @media (prefers-reduced-motion: reduce) {
+@media (prefers-reduced-motion: reduce) {
     .site-brand-enter,
     .home-gallery-enter,
     .page-enter {
         animation: none;
     }
-} */
+    
+    dialog,
+    dialog::backdrop {
+        transition: none;
+    }
+
+    body,
+    header,
+    nav,
+    main,
+    footer,
+    article {
+        transition: none;
+    }
+}
