@@ -20,6 +20,9 @@ export const metadata: Metadata = {
     description:
       "Une galerie photographique personnelle, entre paysages, architecture, voyages et noir et blanc.",
   },
+  icons: {
+    icon: "/images/favicon-dark.png",
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

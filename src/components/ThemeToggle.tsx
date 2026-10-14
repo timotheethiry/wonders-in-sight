@@ -5,11 +5,30 @@ import { useEffect, useState } from "react";
 
 type Theme = "light" | "dark";
 
+function updateFavicon(theme: Theme) {
+    const favicon = document.querySelector<HTMLLinkElement>(
+        'link[rel="icon"]',
+    );
+
+    if (favicon) {
+        favicon.href =
+            theme === "light"
+                ? "/images/favicon-light.png"
+                : "/images/favicon-dark.png";
+    }
+}
+
 export default function ThemeToggle() {
     const [theme, setTheme] = useState<Theme>("dark");
 
     useEffect(() => {
         setTheme(
+            document.documentElement.classList.contains("light")
+                ? "light"
+                : "dark",
+        );
+
+        updateFavicon(
             document.documentElement.classList.contains("light")
                 ? "light"
                 : "dark",
@@ -29,6 +48,7 @@ export default function ThemeToggle() {
         }
 
         setTheme(nextTheme);
+        updateFavicon(nextTheme);
     }
 
     return (
