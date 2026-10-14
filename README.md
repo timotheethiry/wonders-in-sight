@@ -12,19 +12,20 @@ L’interface privilégie une approche éditoriale et minimaliste, plaçant les 
 
 - **Accueil éditorial** : sélection indépendante des galeries thématiques, pilotée par le champ Contentful `featuredOnHome`.
 - **Galeries thématiques** : pages accessibles via `/theme/[slug]`.
-- **Consultation des photos** : galerie en colonnes CSS et modale native HTML `<dialog>` avec animations.
-- **Navigation** : accès aux thèmes depuis l’interface commune.
-- **Modes clair et sombre** : présentation adaptée à chaque mode.
+- **Consultation des photos** : galerie responsive en colonnes CSS et modale native HTML `<dialog>` avec animations.
+- **Interactions** : variation de luminosité au survol et curseur classique indiquant les photos cliquables.
+- **Navigation** : en-tête et pied de page communs, accès aux thèmes depuis l’interface.
+- **Modes clair et sombre** : thème sombre privilégié, thème clair en alternative.
 - **Contentful** : récupération des photographies et de leurs métadonnées.
-- **SEO** : métadonnées globales et spécifiques aux pages thématiques.
-- **Responsive design** : interface adaptée aux différentes tailles d’écran.
+- **SEO** : métadonnées globales, Open Graph et métadonnées spécifiques aux pages thématiques.
+- **Responsive design** : mise en page adaptée aux différentes tailles d’écran.
 
 ## Stack technique
 
 | Technologie | Utilisation |
 | --- | --- |
 | Next.js 16 — App Router | Routage, rendu et métadonnées |
-| React | Composants et interactions |
+| React 19 | Composants et interactions |
 | TypeScript | Typage |
 | Tailwind CSS v4 | Styles et responsive design |
 | Contentful | Gestion des contenus |
@@ -71,7 +72,9 @@ Cette arborescence présente les principaux fichiers, sans prétendre être exha
 
 ## Contentful
 
-Les photographies proviennent du type de contenu `photoWondersInSight`. Le module `src/lib/contentful.ts` initialise le client, récupère les entrées et prépare les données consommées par les pages. Les entrées sans URL d’image exploitable sont écartées et les URL commençant par `//` sont converties en HTTPS.
+Les photographies proviennent du type de contenu `photoWondersInSight`. Le module `src/lib/contentful.ts` initialise le client, récupère les entrées et prépare les données consommées par les pages.
+
+Les entrées sans URL d’image exploitable sont écartées et les URL commençant par `//` sont converties en HTTPS.
 
 Les données préparées comprennent notamment :
 
@@ -125,10 +128,9 @@ L’application est normalement accessible sur [http://localhost:3000](http://lo
 
 ```bash
 npx tsc --noEmit
+npm run lint
 npm run build
 ```
-
-Les scripts de lint et de test éventuels sont à consulter dans `package.json`.
 
 Les pages récupèrent les contenus de manière asynchrone et utilisent React `Suspense` pour encadrer l’attente des données. Cela ne définit pas, à lui seul, une stratégie de mise en cache.
 

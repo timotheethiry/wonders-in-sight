@@ -107,7 +107,7 @@ Les métadonnées spécifiques aux pages thématiques et les informations de par
 
 Le composant reçoit des données déjà adaptées au modèle de l'application et reste indépendant de leur provenance.
 
-La galerie utilise des colonnes CSS pour obtenir une disposition de type masonry, sans dépendance dédiée.
+La galerie utilise des colonnes CSS pour obtenir une disposition de type masonry, sans dépendance dédiée. Le nombre de colonnes et la largeur maximale s'adaptent à la taille de l'écran, avec un centrage horizontal.
 
 ### 4.2. Modale photographique
 
@@ -115,7 +115,7 @@ La galerie utilise des colonnes CSS pour obtenir une disposition de type masonry
 
 Les animations d'ouverture et de fermeture reposent sur des états React et les classes CSS associées, notamment `is-visible` et `is-closing`.
 
-Les évolutions de la récupération des données ne doivent pas altérer le fonctionnement de la modale ni la consultation au clavier.
+Les évolutions de la récupération des données et de la présentation ne doivent pas altérer le fonctionnement de la modale ni la consultation au clavier.
 
 ### 4.3. Récit photographique
 
@@ -132,6 +132,8 @@ L'intégration effective de ce champ dans les données et dans l'interface doit 
 **Décision :** privilégier une esthétique éditoriale, minimaliste et contemplative.
 
 Les espaces, la typographie et les animations servent la lecture des images. Les éléments décoratifs gratuits, les étiquettes génériques et les interactions superflues sont à éviter.
+
+Les interactions avec les photographies restent discrètes : variation de luminosité au survol et curseur indiquant la possibilité de cliquer.
 
 Les pages thématiques comprennent un titre en police serif et une description spécifique au thème, dans un en-tête éditorial distinct de l'en-tête global du site.
 
