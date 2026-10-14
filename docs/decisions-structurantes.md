@@ -133,9 +133,7 @@ Toute évolution de la galerie doit préserver le fonctionnement de la modale et
 
 **Orientation éditoriale :** permettre d'accompagner certaines photographies d'un récit personnel via le champ `narrative`.
 
-Le récit doit rester secondaire par rapport à l'image. Si sa présentation nécessite une zone distincte, celle-ci doit pouvoir défiler indépendamment. En l'absence de récit, la composition ne doit pas conserver de colonne vide.
-
-L'intégration complète du champ dans les données et dans l'interface reste à confirmer avant de considérer cette fonctionnalité comme achevée.
+Le récit est intégré aux données de la galerie et affiché dans la modale lorsqu’il est renseigné. Il reste secondaire par rapport à l’image. Sur grand écran, il dispose d’une colonne distincte et défilante indépendamment ; en l’absence de récit, cette colonne n’est pas affichée.
 
 ## 5. Identité visuelle
 
@@ -175,7 +173,6 @@ Toute évolution doit respecter les principes suivants :
 
 Les éléments suivants restent des pistes de travail et ne doivent pas être considérés comme achevés sans vérification de l'implémentation :
 
-- L'intégration complète du champ `narrative` dans les données et l'interface.
 - La stratégie de mise en cache et l'optimisation des requêtes Contentful.
 - Les éventuelles optimisations complémentaires du chargement des images.
 

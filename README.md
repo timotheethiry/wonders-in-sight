@@ -13,15 +13,10 @@ L’interface privilégie une approche minimaliste et contemplative, centrée su
 - **Accueil éditorial** : sélection indépendante des galeries thématiques, pilotée par le champ Contentful `featuredOnHome`.
 - **Galeries thématiques** : pages dédiées accessibles via `/theme/[slug]`.
 - **Consultation des photos** : galerie responsive en colonnes CSS et modale native `<dialog>` avec animations d’ouverture et de fermeture.
-- **Navigation** : en-tête et pied de page communs, navigation thématique et accès à la présentation du site.
-- **Animations** : apparition progressive du contenu, animation d’entrée de la galerie d’accueil et transitions entre les pages.
-- **Chargement progressif** : composants de chargement avec React `Suspense`.
-- **Page 404 personnalisée** : présentation cohérente avec l’identité visuelle du site.
-- **Thèmes clair et sombre** : sélecteur avec mémorisation du choix, thème sombre par défaut et thème clair alternatif.
-- **Contentful** : récupération des photographies et de leurs métadonnées.
-- **SEO** : métadonnées globales, Open Graph et métadonnées spécifiques aux pages thématiques.
-- **Responsive design** : interface adaptée aux différentes tailles d’écran.
-- **Accessibilité** : prise en compte de la préférence de réduction des mouvements.
+- **Navigation** : en-tête, pied de page, navigation thématique et présentation du site.
+- **Expérience utilisateur** : animations, chargements progressifs avec React `Suspense` et page 404 personnalisée.
+- **Thèmes clair et sombre** : thème sombre par défaut, thème clair alternatif et mémorisation du choix.
+- **SEO et accessibilité** : métadonnées globales et thématiques, Open Graph et prise en compte de la préférence de réduction des mouvements.
 
 ## Stack technique
 
@@ -40,7 +35,7 @@ L’interface privilégie une approche minimaliste et contemplative, centrée su
 ### Routes
 
 - `/` : sélection éditoriale.
-- `/theme/[slug]` : galerie thématique. Un slug inconnu renvoie une page 404.
+- `/theme/[slug]` : galerie thématique ; un slug inconnu renvoie une page 404.
 - `not-found.tsx` : page 404 personnalisée.
 
 Les thèmes sont centralisés dans `src/data/themes.ts` :
@@ -83,8 +78,8 @@ Cette arborescence présente les principaux fichiers, sans prétendre être exha
 - `ThemeToggle.tsx` gère le changement de thème et la mémorisation du choix.
 - `HomeEntrance.tsx` gère l’animation d’entrée de la galerie d’accueil.
 - `GallerySkeleton.tsx` fournit un état de chargement réutilisable.
-- `layout.tsx` intègre les éléments communs de l’interface et les métadonnées globales.
-- `template.tsx` applique la transition d’entrée du contenu lors des navigations.
+- `layout.tsx` intègre les éléments communs et les métadonnées globales.
+- `template.tsx` applique la transition d’entrée lors des navigations.
 - `globals.css` centralise les variables visuelles, les transitions et les animations globales.
 
 ## Contentful
@@ -93,11 +88,11 @@ Les photographies proviennent du type de contenu `photoWondersInSight`. Le modul
 
 Les entrées sans URL d’image exploitable sont écartées. Les URL commençant par `//` sont converties en HTTPS.
 
-Les images sont optimisées à la livraison par Contentful au format WebP, avec une largeur de 800 px pour la galerie et de 1600 px pour l’affichage agrandi.
+Les images sont optimisées par Contentful au format WebP, avec une largeur de 800 px pour la galerie et de 1600 px pour l’affichage agrandi.
 
-Les données préparées comprennent notamment :
+### Champs et données
 
-| Propriété | Rôle |
+| Champ | Rôle |
 | --- | --- |
 | `id` | Identifiant de la photographie |
 | `title` | Titre |
@@ -106,16 +101,17 @@ Les données préparées comprennent notamment :
 | `imageFull` | URL de l’image destinée à la modale |
 | `alt` | Texte alternatif |
 | `location` | Coordonnées géographiques |
-| `locationName` | Nom lisible du lieu |
+| `locationName` | Nom lisible facultatif du lieu |
 | `narrative` | Texte descriptif complémentaire |
+| `featuredOnHome` | Inclusion dans la sélection de l’accueil |
+
+Les coordonnées et le nom lisible du lieu sont distincts. Le nom lisible est renseigné manuellement dans Contentful. Aucun géocodage n’est effectué.
 
 ### Sélection éditoriale
 
-Le champ booléen `featuredOnHome` détermine les photographies affichées sur l’accueil.
+`getHomePhotos()` récupère les photographies dont `featuredOnHome` est activé. `getContentfulPhotos()` récupère les photographies destinées aux galeries thématiques.
 
-`getHomePhotos()` récupère les photographies sélectionnées, tandis que `getContentfulPhotos()` conserve les photographies destinées aux galeries thématiques. La sélection de l’accueil suit actuellement l’ordre de réception des données de Contentful.
-
-Les coordonnées et le nom lisible du lieu sont fournis séparément par le CMS. Aucun géocodage n’est effectué.
+La sélection de l’accueil suit actuellement l’ordre de réception des données de Contentful.
 
 ### Configuration
 
@@ -127,7 +123,7 @@ CONTENTFUL_ACCESS_TOKEN=...
 CONTENTFUL_ENVIRONMENT=master
 ```
 
-`CONTENTFUL_ENVIRONMENT` est facultative : sa valeur par défaut est `master`.
+`CONTENTFUL_ENVIRONMENT` est facultative ; sa valeur par défaut est `master`.
 
 Les identifiants doivent rester confidentiels. Ne jamais versionner `.env.local` ni exposer les jetons au navigateur. Le client Contentful est réservé au serveur via `server-only`. Les variables nécessaires doivent également être configurées dans l’environnement de déploiement.
 
@@ -157,7 +153,7 @@ npm run lint
 npm run build
 ```
 
-Les pages récupèrent les contenus de manière asynchrone et utilisent React `Suspense` pour encadrer les attentes. Les squelettes de chargement limitent les changements visuels pendant la récupération des données. L’utilisation de `Suspense` ne définit pas, à elle seule, une stratégie de mise en cache.
+Les pages utilisent React `Suspense` pour encadrer les chargements asynchrones et afficher des squelettes pendant l’attente des données. `Suspense` ne définit pas, à lui seul, une stratégie de mise en cache.
 
 ## Principes de conception
 
