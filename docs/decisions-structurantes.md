@@ -12,7 +12,7 @@ Les décisions présentées correspondent aux choix retenus pour le projet. Les 
 
 **Justification :** bénéficier du routage par fichiers, du rendu serveur et des fonctionnalités de référencement de Next.js, tout en conservant une base de code typée et une architecture simple.
 
-Vercel est la plateforme de déploiement retenue, pour son adaptation à l'écosystème Next.js.
+Vercel est la plateforme de déploiement retenue, pour son adaptation à l'écosystème Next.js. Le dépôt source est hébergé sur GitHub ; le déploiement en production reste à effectuer.
 
 ### 1.2. Séparation des responsabilités
 
@@ -48,6 +48,8 @@ La localisation repose sur deux champs distincts :
 - `locationName` : nom lisible du lieu.
 
 Aucun géocodage n'est effectué.
+
+Les champs `alt` et `narrative` permettent respectivement de fournir un texte alternatif pour l'image et un récit complémentaire.
 
 Toute évolution du modèle Contentful doit être répercutée dans la couche d'adaptation et dans les types de l'application.
 
@@ -107,9 +109,11 @@ Les animations doivent respecter la préférence système `prefers-reduced-motio
 
 **Décision :** produire des métadonnées cohérentes avec le contenu réel de chaque page.
 
-Les titres et descriptions doivent privilégier les photographies et leurs sujets, tout en préservant l'identité de marque « Wonders In Sight ».
+Les métadonnées globales définissent le titre par défaut, son modèle de déclinaison, une description générale et les informations Open Graph du site.
 
-Les métadonnées des pages thématiques et les informations de partage doivent correspondre au contenu présenté.
+Les pages d'accueil et les pages thématiques disposent de métadonnées adaptées à leur contenu. Les titres et descriptions privilégient les photographies et leurs sujets, tout en préservant l'identité de marque « Wonders In Sight ».
+
+Les textes alternatifs des images sont fournis par le champ Contentful `alt`.
 
 ## 4. Galerie et consultation
 
@@ -133,7 +137,21 @@ Toute évolution de la galerie doit préserver le fonctionnement de la modale et
 
 **Orientation éditoriale :** permettre d'accompagner certaines photographies d'un récit personnel via le champ `narrative`.
 
-Le récit est intégré aux données de la galerie et affiché dans la modale lorsqu’il est renseigné. Il reste secondaire par rapport à l’image. Sur grand écran, il dispose d’une colonne distincte et défilante indépendamment ; en l’absence de récit, cette colonne n’est pas affichée.
+Le récit est intégré aux données de la galerie et affiché dans la modale lorsqu'il est renseigné. Il reste secondaire par rapport à l'image. Sur grand écran, il dispose d'une colonne distincte et défilante indépendamment ; en l'absence de récit, cette colonne n'est pas affichée.
+
+### 4.4. Optimisation des images
+
+**Décision :** utiliser l'API Images de Contentful pour adapter les images à leur contexte d'affichage, sans ajouter actuellement de traitement d'image via `next/image`.
+
+Les URL utilisées par l'application demandent :
+
+- une largeur maximale de 800 px pour la galerie ;
+- une largeur maximale de 1600 px pour la modale ;
+- le format WebP via `fm=webp`.
+
+Les fichiers sources peuvent être compressés avant leur import dans Contentful. Les paramètres d'URL servent à produire les variantes diffusées aux visiteurs ; ils ne modifient pas les fichiers originaux stockés dans le CMS.
+
+Les balises HTML `<img>` sont conservées. Les images de la galerie utilisent le chargement différé, à l'exception des premières images chargées prioritairement.
 
 ## 5. Identité visuelle
 
@@ -151,7 +169,7 @@ Les pages thématiques disposent d'un titre en police serif et d'une description
 
 **Décision :** proposer des modes clair et sombre cohérents avec la palette du projet.
 
-Le mode sombre est utilisé par défaut. Un contrôle dans l'en-tête permet de basculer entre les deux modes, et le choix est conservé dans localStorage sous la clé wis-theme.
+Le mode sombre est utilisé par défaut. Un contrôle dans l'en-tête permet de basculer entre les deux modes, et le choix est conservé dans `localStorage` sous la clé `wis-theme`.
 
 Les couleurs reposent sur les variables CSS du projet. Les transitions accompagnent le changement de thème sans ajouter de dépendance.
 
@@ -171,10 +189,11 @@ Toute évolution doit respecter les principes suivants :
 
 ## 7. Points restant à vérifier
 
-Les éléments suivants restent des pistes de travail et ne doivent pas être considérés comme achevés sans vérification de l'implémentation :
+Les éléments suivants restent à étudier avant ou après la mise en production :
 
-- La stratégie de mise en cache et l'optimisation des requêtes Contentful.
-- Les éventuelles optimisations complémentaires du chargement des images.
+- La configuration des variables d'environnement Contentful dans Vercel.
+- Le déploiement de production et la vérification des pages, des images et des métadonnées sur le domaine final.
+- L'intérêt éventuel d'une stratégie de mise en cache, de l'optimisation des requêtes Contentful, et d'optimisations complémentaires du chargement des images.
 
 Ces points ne constituent pas des décisions d'architecture supplémentaires.
 

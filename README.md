@@ -13,10 +13,11 @@ L’interface privilégie une approche minimaliste et contemplative, centrée su
 - **Accueil éditorial** : sélection indépendante des galeries thématiques, pilotée par le champ Contentful `featuredOnHome`.
 - **Galeries thématiques** : pages dédiées accessibles via `/theme/[slug]`.
 - **Consultation des photos** : galerie responsive en colonnes CSS et modale native `<dialog>` avec animations d’ouverture et de fermeture.
-- **Navigation** : en-tête, pied de page, navigation thématique et présentation du site.
-- **Expérience utilisateur** : animations, chargements progressifs avec React `Suspense` et page 404 personnalisée.
+- **Navigation** : en-tête, pied de page, navigation thématique et transitions entre les pages.
+- **Expérience utilisateur** : animations d’entrée, chargements progressifs avec React `Suspense`, squelettes de chargement et page 404 personnalisée.
 - **Thèmes clair et sombre** : thème sombre par défaut, thème clair alternatif et mémorisation du choix.
 - **SEO et accessibilité** : métadonnées globales et thématiques, Open Graph et prise en compte de la préférence de réduction des mouvements.
+- **Images optimisées** : variantes WebP servies par Contentful, adaptées à la grille et à l’affichage agrandi.
 
 ## Stack technique
 
@@ -26,8 +27,9 @@ L’interface privilégie une approche minimaliste et contemplative, centrée su
 | React 19 | Composants et interactions |
 | TypeScript | Typage |
 | Tailwind CSS v4 | Styles et responsive design |
-| Contentful | Gestion des contenus |
+| Contentful | Gestion des contenus et des images |
 | npm / Git | Dépendances et versions |
+| GitHub | Hébergement du dépôt source |
 | Vercel | Plateforme de déploiement prévue |
 
 ## Architecture
@@ -35,7 +37,7 @@ L’interface privilégie une approche minimaliste et contemplative, centrée su
 ### Routes
 
 - `/` : sélection éditoriale.
-- `/theme/[slug]` : galerie thématique ; un slug inconnu renvoie une page 404.
+- `/theme/[slug]` : galerie thématique ; un slug inconnu renvoie une page 404 personnalisée.
 - `not-found.tsx` : page 404 personnalisée.
 
 Les thèmes sont centralisés dans `src/data/themes.ts` :
@@ -84,11 +86,19 @@ Cette arborescence présente les principaux fichiers, sans prétendre être exha
 
 ## Contentful
 
-Les photographies proviennent du type de contenu `photoWondersInSight`. Le module `src/lib/contentful.ts` initialise le client Contentful, récupère les entrées et prépare les données consommées par les pages.
+Les photographies proviennent du type de contenu `photoWondersInSight`. Le module `src/lib/contentful.ts` initialise le client Contentful côté serveur, récupère les entrées et prépare les données consommées par les pages.
 
 Les entrées sans URL d’image exploitable sont écartées. Les URL commençant par `//` sont converties en HTTPS.
 
-Les images sont optimisées par Contentful au format WebP, avec une largeur de 800 px pour la galerie et de 1600 px pour l’affichage agrandi.
+### Images
+
+Les URL sont optimisées via l’API Images de Contentful :
+
+- **Galerie** : largeur maximale de 800 px.
+- **Modale** : largeur maximale de 1600 px.
+- **Format** : WebP.
+
+Les fichiers sources sont préparés avant leur import dans Contentful. Le projet utilise actuellement des balises HTML `<img>` et non le composant `next/image`.
 
 ### Champs et données
 
@@ -129,11 +139,11 @@ Les identifiants doivent rester confidentiels. Ne jamais versionner `.env.local`
 
 ## Installation et développement
 
-**Prérequis :** Node.js, npm et un accès configuré à Contentful.
+**Prérequis :** Node.js, npm, Git et un accès configuré à Contentful.
 
 ```bash
 git clone <URL_DU_DEPOT>
-cd <NOM_DU_DEPOT>
+cd wonders-in-sight
 npm install
 ```
 
@@ -174,7 +184,9 @@ Voir [`docs/decisions-structurantes.md`](./docs/decisions-structurantes.md) pour
 
 ## Déploiement
 
-Le déploiement est prévu sur [Vercel](https://vercel.com/). Les variables d’environnement nécessaires à Contentful doivent y être configurées.
+Le dépôt source est hébergé sur GitHub. Le déploiement sur [Vercel](https://vercel.com/) reste à effectuer.
+
+Les variables d’environnement nécessaires à Contentful devront être configurées dans le projet Vercel avant la mise en production.
 
 ## Licence
 
