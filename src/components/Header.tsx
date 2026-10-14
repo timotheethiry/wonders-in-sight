@@ -18,15 +18,19 @@ export default function Header({ themes }: HeaderProps) {
                 <Link
                     href="/"
                     className="font-serif text-2xl tracking-tight"
-                    aria-label="Accueil de la galerie">
+                    aria-label="Accueil de la galerie"
+                >
                     Wonders In Sight<span className="text-muted">.</span>
                 </Link>
 
                 <nav
                     aria-label="Navigation principale"
-                    className="flex items-center gap-5 text-sm text-muted sm:gap-8">
+                    className="flex items-center gap-5 text-sm text-muted sm:gap-8"
+                >
                     <ThemeToggle />
-                    <Link href="/#a-propos" className="transition-colors hover:text-foreground">À propos</Link>
+                    <Link href="/a-propos" className="transition-colors hover:text-foreground">
+                        À propos
+                    </Link>
                 </nav>
             </header>
 
