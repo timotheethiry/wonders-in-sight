@@ -1,269 +1,170 @@
 # Wonders In Sight — Décisions structurantes
 
-Ce document synthétise les décisions techniques, fonctionnelles et éditoriales qui orientent le développement de Wonders In Sight.
+Ce document rassemble les décisions techniques, fonctionnelles et éditoriales qui doivent guider l'évolution de Wonders In Sight. Il complète le [README](../readme.md), sans remplacer la documentation de l'installation ou du fonctionnement du projet.
 
-Il vise à préserver la cohérence du projet au fil des évolutions et à éviter de remettre en question inutilement des choix déjà validés.
-
-Les décisions sont formulées de manière synthétique. Elles pourront être complétées ou révisées lorsque les besoins du projet évolueront.
+Les décisions décrivent l'architecture retenue et les contraintes à préserver. Les pistes d'évolution ne sont pas considérées comme des fonctionnalités réalisées.
 
 ## 1. Architecture et technologies
 
-### 1.1. Next.js App Router
+### 1.1. Stack technique
 
-**Décision :** utiliser Next.js avec l'App Router.
+**Décision :** utiliser Next.js 16 avec l'App Router, React, TypeScript et Tailwind CSS v4.
 
-**Justification :**
+**Justification :** bénéficier du routage par fichiers, du rendu serveur, des métadonnées SEO et d'une base de code typée, sans multiplier les abstractions.
 
-- Organiser les pages à partir de l'arborescence de fichiers.
-- Disposer d'un routage adapté aux pages thématiques.
-- Faciliter le référencement et la génération des métadonnées.
-- Séparer les composants de page des composants interactifs lorsque cela est pertinent.
+Vercel est la plateforme de déploiement retenue, pour son adaptation à l'écosystème Next.js.
 
-### 1.2. TypeScript et Tailwind CSS
+### 1.2. Séparation des responsabilités
 
-**Décision :** utiliser TypeScript pour le typage et Tailwind CSS v4 pour la mise en forme.
+**Décision :** séparer la récupération des contenus, les données de configuration et leur présentation.
 
-**Justification :** conserver une base de code explicite et faciliter les ajustements visuels sans multiplier les abstractions.
+- `src/lib/contentful.ts` centralise l'accès au CMS et l'adaptation des données.
+- `src/data/themes.ts` centralise la configuration des thèmes.
+- `src/components/PhotoGallery.tsx` gère l'affichage des photographies et leur consultation.
+- `src/app/` contient les pages et le layout de l'application.
 
-### 1.3. Déploiement
+Les composants de présentation ne doivent pas dépendre directement de la structure brute des réponses de Contentful.
 
-**Décision :** retenir Vercel comme plateforme de déploiement.
+### 1.3. Dépendances
 
-**Justification :** disposer d'une solution adaptée à l'écosystème Next.js.
+**Décision :** privilégier les fonctionnalités natives et les dépendances minimales.
+
+Toute nouvelle dépendance doit répondre à un besoin identifié et faire l'objet d'un arbitrage préalable.
 
 ## 2. Gestion des contenus
 
-### 2.1. Contentful comme CMS
+### 2.1. Contentful
 
-**Décision :** utiliser Contentful pour gérer les photographies et les informations éditoriales associées.
+**Décision :** utiliser Contentful comme CMS pour les photographies et leurs informations éditoriales.
 
-**Justification :**
+Le type de contenu utilisé est `photoWondersInSight`. Le module `src/lib/contentful.ts` récupère les entrées, notamment avec `include: 1` pour accéder aux ressources liées, et transforme les données en objets adaptés à l'application.
 
-- Séparer les contenus du code de l'application.
-- Faciliter la mise à jour des photographies et de leurs métadonnées.
-- Permettre l'enrichissement progressif du fonds photographique.
+Le modèle actuel exploite notamment les identifiants Contentful, le titre, la catégorie, l'image et ses métadonnées. Les identifiants restent des chaînes de caractères. Les URL d'images commençant par `//` sont converties en URL HTTPS et les entrées sans image exploitable sont écartées.
 
-L'intégration du client Contentful est réalisée dans `src/lib/contentful.ts`. Le client est réservé au serveur et utilise les variables d'environnement suivantes :
+Toute évolution du modèle Contentful doit être répercutée dans la couche d'adaptation et dans les types de l'application.
 
-- `CONTENTFUL_SPACE_ID` : identifiant de l'espace Contentful.
-- `CONTENTFUL_ACCESS_TOKEN` : jeton d'accès.
-- `CONTENTFUL_ENVIRONMENT` : environnement Contentful, avec `master` comme valeur par défaut.
+**Sécurité :** le client Contentful est réservé au serveur. Les paramètres de connexion sont fournis par les variables d'environnement `CONTENTFUL_SPACE_ID`, `CONTENTFUL_ACCESS_TOKEN` et, facultativement, `CONTENTFUL_ENVIRONMENT` (valeur par défaut : `master`). Les secrets ne doivent être ni versionnés ni exposés au navigateur.
 
-Les secrets ne doivent être ni versionnés dans Git ni exposés au navigateur. Le fichier `.env.local` est utilisé pour la configuration locale.
+### 2.2. Sélection éditoriale de l'accueil
 
-Les photographies sont récupérées depuis le type de contenu `photoWondersInSight`. La requête utilise `include: 1` afin de récupérer les ressources liées, notamment les fichiers image associés aux entrées.
+**Décision :** distinguer la sélection éditoriale de la page d'accueil des galeries thématiques.
 
-Le module transforme les données du CMS en objets adaptés à la galerie. Il exploite notamment :
+Le champ Contentful `featuredOnHome` permet d'identifier les photographies mises en avant sur l'accueil. Une photographie peut ainsi figurer dans cette sélection tout en restant accessible depuis son thème.
 
-- `sys.id` pour l'identifiant de la photographie ;
-- `subject` pour le titre, avec un titre de ressource en solution de repli ;
-- `category` pour renseigner le thème ;
-- `photo` pour accéder à la ressource image ;
-- `location` pour récupérer les coordonnées géographiques ;
-- les métadonnées de l'Asset pour l'image et son texte alternatif.
+L'ordre de la sélection suit actuellement l'ordre de réception des photographies depuis Contentful.
 
-Les identifiants Contentful sont des chaînes de caractères et doivent conserver ce type dans les composants qui consomment ces données. Les URL d'images commençant par `//` sont converties en URL HTTPS.
+**Justification :** l'accueil constitue un choix éditorial indépendant du classement thématique.
 
-Les entrées sans ressource image exploitable ou sans URL de fichier sont écartées.
+### 2.3. Thèmes et localisation
 
-La transformation actuelle des données constitue une adaptation au modèle du CMS existant. Toute évolution du modèle Contentful doit être répercutée dans cette couche d'adaptation et dans les types consommés par l'application.
+**Décision :** centraliser les thèmes dans `src/data/themes.ts`, avec un slug, un libellé et une description.
 
-**Localisation :** le champ `location` fournit des coordonnées (`lat` et `lon`), et non une adresse ou un nom de lieu directement exploitable. Leur conversion en nom de lieu lisible reste un chantier distinct tant qu'elle n'a pas été implémentée et validée.
-
-### 2.2. Configuration centralisée des thèmes
-
-**Décision :** centraliser la configuration des thèmes dans `src/data/themes.ts`.
-
-**Justification :** éviter de disperser les libellés, les identifiants et les slugs dans plusieurs composants.
-
-Les slugs des pages thématiques doivent rester stables afin de préserver la cohérence de la navigation et des URL.
-
-Les thèmes actuellement définis sont :
+Les slugs actuels sont :
 
 - `paysages`
 - `structure`
 - `voyages`
 - `nature`
 
-Les valeurs de thème issues de Contentful doivent correspondre aux slugs attendus par l'application pour que le filtrage fonctionne. L'évolution ou l'harmonisation de ces valeurs doit être traitée explicitement.
+Les valeurs de thème issues de Contentful doivent correspondre aux slugs utilisés par l'application.
 
-### 2.3. Sélection éditoriale de la page d'accueil
-
-**Décision :** distinguer la sélection éditoriale de l'accueil de l'ensemble des photographies disponibles dans les galeries thématiques.
-
-**Justification :** l'accueil constitue un choix éditorial intentionnel, et non un simple affichage automatique de tous les contenus reçus.
-
-La sélection doit pouvoir évoluer indépendamment des thèmes. Son mode de gestion doit rester suffisamment simple pour permettre de remplacer les photographies mises en avant sans modifier le fonctionnement des galeries.
-
-L'intégration de Contentful fournit une source de données commune. Elle ne détermine pas à elle seule les règles de sélection éditoriale de l'accueil : celles-ci doivent rester explicites dans l'implémentation.
-
-### 2.4. Séparation entre récupération et présentation des contenus
-
-**Décision :** centraliser l'accès à Contentful dans `src/lib/contentful.ts` et laisser les composants de présentation consommer les objets transformés par ce module.
-
-**Justification :**
-
-- Éviter de disperser les appels au CMS dans les composants d'interface.
-- Centraliser l'adaptation entre le modèle Contentful et celui de l'application.
-- Faciliter les évolutions du CMS sans multiplier les modifications dans la galerie.
-
-La récupération des données est asynchrone. Les pages qui l'utilisent doivent tenir compte de cette attente dans leur stratégie de rendu.
+Pour la localisation, `location` contient les coordonnées géographiques et `locationName` le nom lisible du lieu. Aucun géocodage n'est effectué.
 
 ## 3. Pages et navigation
 
-### 3.1. Page d'accueil indépendante des thèmes
+### 3.1. Accueil et pages thématiques
 
-**Décision :** la page d'accueil (`/`) présente une sélection éditoriale qui n'est pas organisée comme une simple page thématique.
+**Décision :** proposer deux expériences complémentaires :
 
-**Justification :** proposer une entrée dans l'univers photographique du site plutôt qu'un classement exclusivement catégoriel.
+- `/` : sélection éditoriale indépendante des thèmes.
+- `/theme/[slug]` : galerie dédiée à un thème, accessible directement par URL et indexable.
 
-La récupération des photographies depuis Contentful et le choix des images mises en avant constituent deux responsabilités distinctes.
+Les pages thématiques utilisent la configuration centralisée des thèmes. Un slug inconnu déclenche `notFound()`.
 
-### 3.2. Pages thématiques dédiées
+Les thèmes sans photographie ne doivent pas être proposés comme destinations dans la navigation.
 
-**Décision :** utiliser une route dynamique `/theme/[slug]` pour les pages thématiques.
+### 3.2. Chargement des données
 
-**Justification :**
+**Décision :** utiliser les composants serveur pour la récupération des données et React `<Suspense>` lorsque le rendu asynchrone le nécessite.
 
-- Éviter de créer une page distincte pour chaque thème.
-- Faciliter l'ajout de thèmes.
-- Permettre l'accès direct aux pages et leur indexation.
+Les paramètres dynamiques sont traités conformément à la version de Next.js utilisée, notamment sous forme de `Promise` dans les pages concernées par Next.js 16.
 
-Un thème sans photographie ne doit pas être proposé comme destination dans la navigation. Les accès directs à une page thématique doivent également être traités proprement, notamment pour les slugs inconnus.
-
-Les paramètres de route sont traités conformément au fonctionnement de la version de Next.js utilisée, notamment lorsqu'ils sont asynchrones.
+`<Suspense>` gère l'attente des données ; il ne définit pas, à lui seul, une stratégie de mise en cache.
 
 ### 3.3. Référencement
 
-**Décision :** donner la priorité aux photographies et aux sujets représentés dans les titres et les métadonnées, tout en conservant « Wonders In Sight » comme identité de marque.
+**Décision :** produire des métadonnées cohérentes avec le contenu réel de chaque page.
 
-**Justification :** permettre aux contenus photographiques d'être identifiables et compréhensibles indépendamment de la marque, sans négliger l'identité du site.
+Les photographies et leurs sujets doivent rester prioritaires dans les titres et descriptions, tout en conservant « Wonders In Sight » comme identité de marque.
 
-Les métadonnées doivent être cohérentes avec le contenu réel de chaque page. Les choix définitifs concernant les titres, descriptions, URL canoniques et aperçus de partage doivent être documentés à mesure qu'ils sont vérifiés et mis en œuvre.
+Les métadonnées spécifiques aux pages thématiques et les informations de partage doivent être maintenues en cohérence avec leur contenu.
 
-## 4. Galerie et consultation des photographies
+## 4. Galerie et consultation
 
-### 4.1. Composant partagé
+### 4.1. Galerie partagée
 
 **Décision :** mutualiser l'affichage des photographies dans `PhotoGallery`.
 
-**Justification :** conserver un comportement cohérent entre l'accueil et les pages thématiques, tout en évitant de dupliquer la logique d'affichage et de consultation.
+Le composant reçoit des données déjà adaptées au modèle de l'application et reste indépendant de leur provenance.
 
-Le composant reçoit une collection de photographies typées et reste indépendant de la manière dont les données ont été récupérées.
+La galerie utilise des colonnes CSS pour obtenir une disposition de type masonry, sans dépendance dédiée.
 
-### 4.2. Mise en page en colonnes CSS
+### 4.2. Modale photographique
 
-**Décision :** utiliser une disposition en colonnes CSS pour la galerie.
+**Décision :** utiliser l'élément HTML natif `<dialog>` pour afficher une photographie agrandie.
 
-**Justification :** privilégier une présentation visuelle souple qui met les photographies en valeur.
+Les animations d'ouverture et de fermeture reposent sur des états React et les classes CSS associées, notamment `is-visible` et `is-closing`.
 
-Les ajustements de mise en page doivent préserver la lisibilité et le cadrage des images, sans introduire de complexité injustifiée.
+Les évolutions de la récupération des données ne doivent pas altérer le fonctionnement de la modale ni la consultation au clavier.
 
-### 4.3. Modale native
+### 4.3. Récit photographique
 
-**Décision :** utiliser l'élément HTML natif `<dialog>` pour la consultation agrandie.
+**Orientation éditoriale :** permettre d'accompagner certaines photographies d'un récit personnel via le champ `narrative`.
 
-**Justification :**
+Lorsque cette fonctionnalité est présente, le récit doit rester secondaire par rapport à l'image, avec une présentation lisible et un défilement indépendant si nécessaire. En son absence, la composition ne doit pas conserver une colonne vide.
 
-- S'appuyer sur un mécanisme natif du navigateur.
-- Conserver une interaction de fermeture cohérente, notamment avec la touche Échap.
-- Éviter l'ajout d'une dépendance dédiée à la modale.
-
-Les animations d'ouverture et de fermeture reposent sur des états React et des classes CSS. Les évolutions de la source des données ne doivent pas altérer ce comportement.
-
-### 4.4. Récit photographique
-
-**Décision :** prévoir un champ éditorial `narrative` pour accompagner certaines photographies.
-
-**Justification :** permettre une expression personnelle à propos de l'image, au-delà de son titre et de son lieu.
-
-Lorsque le récit existe, il apparaît dans une colonne distincte sur grand écran, avec un défilement indépendant de la photographie. L'alignement du texte est à gauche, avec un interligne généreux.
-
-La photographie doit rester stable pendant la lecture. En l'absence de récit, la présentation doit éviter de conserver une colonne vide qui déséquilibre la composition.
-
-La présence effective de ce champ dans le modèle de données consommé par la galerie doit être vérifiée avant de considérer cette fonctionnalité comme entièrement intégrée à Contentful.
+L'intégration effective de ce champ dans les données et dans l'interface doit être vérifiée avant de considérer la fonctionnalité comme entièrement achevée.
 
 ## 5. Identité visuelle
 
 ### 5.1. Direction artistique
 
-**Décision :** privilégier une esthétique minimaliste, contemplative et centrée sur la photographie.
+**Décision :** privilégier une esthétique éditoriale, minimaliste et contemplative.
 
-**Conséquences :**
+Les espaces, la typographie et les animations servent la lecture des images. Les éléments décoratifs gratuits, les étiquettes génériques et les interactions superflues sont à éviter.
 
-- Limiter les éléments décoratifs.
-- Utiliser une typographie discrète et une mise en page aérée.
-- Réserver les animations aux transitions qui améliorent réellement la compréhension ou l'expérience.
-- Éviter les interactions superflues qui détournent l'attention des images.
+Les pages thématiques comprennent un titre en police serif et une description spécifique au thème, dans un en-tête éditorial distinct de l'en-tête global du site.
 
 ### 5.2. Modes clair et sombre
 
-**Décision :** proposer un mode clair et un mode sombre.
+**Décision :** proposer un mode clair et un mode sombre, avec le mode sombre comme identité visuelle principale.
 
-Le thème sombre constitue l'identité visuelle principale, tandis que le mode clair offre une alternative de consultation.
+La préférence du système est prise en compte et l'utilisateur peut choisir son mode d'affichage. Les deux modes doivent rester cohérents avec la palette définie dans le projet.
 
-La préférence du système est prise en compte lors du premier accès et le choix explicite de l'utilisateur est conservé.
+Les composants réutilisent les variables et classes de couleur existantes plutôt que d'introduire des couleurs arbitraires.
 
-**Justification :** respecter les préférences de consultation sans imposer une apparence unique, tout en conservant une direction artistique cohérente.
+## 6. Principes transversaux
 
-Le changement de thème ne doit pas altérer le cadrage des photographies ni le fonctionnement de la modale.
+Les évolutions doivent respecter les principes suivants :
 
-## 6. Principes techniques transversaux
+- Préserver les performances, l'accessibilité et la navigation au clavier.
+- Adapter l'interface aux différentes tailles d'écran.
+- Respecter les préférences de réduction des animations.
+- Maintenir la séparation entre données, logique métier et présentation.
+- Éviter les dépendances et les abstractions injustifiées.
+- Ne pas modifier l'architecture ou les décisions validées sans nécessité identifiée et arbitrage explicite.
 
-### 6.1. Limiter les dépendances
+## 7. Points restant à vérifier
 
-**Décision :** privilégier les fonctionnalités natives de la plateforme et les solutions déjà présentes dans le projet.
+Les éléments suivants ne doivent être considérés comme terminés qu'après vérification de l'implémentation :
 
-**Justification :** limiter la maintenance, la complexité et le coût des évolutions.
+- L'intégration complète du champ `narrative` dans les données et l'interface.
+- La stratégie de mise en cache et d'optimisation des requêtes Contentful.
+- Les éventuelles optimisations complémentaires du chargement des images.
+- Les transitions de navigation ou effets d'entrée, s'ils sont retenus ultérieurement.
 
-Toute nouvelle dépendance doit répondre à un besoin clairement identifié.
-
-### 6.2. Performances et accessibilité
-
-**Principe :** les choix d'interface doivent tenir compte des performances, de la navigation au clavier, de la lisibilité et des préférences de réduction des animations.
-
-Ces exigences doivent être vérifiées lors de l'ajout de nouvelles interactions ou de transitions de page.
-
-### 6.3. Chargement asynchrone et Suspense
-
-**Décision :** encadrer avec React `<Suspense>` les composants qui attendent les données asynchrones de Contentful lorsque cela est nécessaire au rendu de la page dans Next.js.
-
-**Justification :**
-
-- Prévoir un état de chargement pendant la récupération des photographies.
-- Permettre à Next.js de gérer les composants qui suspendent le rendu.
-- Conserver une structure cohérente entre la page d'accueil et les pages thématiques.
-
-Le composant asynchrone qui récupère les données doit être placé à l'intérieur de la frontière `<Suspense>` pour que celle-ci puisse gérer son attente.
-
-**Limite :** `<Suspense>` ne constitue pas une stratégie de mise en cache. Les choix de cache, de rendu dynamique et d'optimisation des requêtes doivent être étudiés séparément, selon les besoins et le comportement constaté.
-
-### 6.4. Variables d'environnement et secrets
-
-**Décision :** conserver les paramètres de connexion à Contentful dans des variables d'environnement et réserver l'accès au client du CMS au serveur.
-
-**Justification :**
-
-- Éviter d'inscrire les secrets dans le code source.
-- Faciliter la configuration entre les environnements local et de production.
-- Réduire le risque d'exposition des jetons d'accès.
-
-Le fichier `.env.local` ne doit pas être versionné. Les variables nécessaires doivent être configurées séparément dans l'environnement de déploiement.
-
-## 7. Évolutions à documenter
-
-Les évolutions suivantes devront être documentées lorsqu'elles seront effectivement décidées et mises en œuvre :
-
-- Les effets d'entrée sur la page d'accueil.
-- Les transitions entre la page d'accueil et les pages thématiques.
-- Les éventuels changements de stratégie de chargement ou d'optimisation des images.
-- Les choix définitifs concernant la gestion éditoriale des contenus.
-- La conversion des coordonnées géographiques Contentful en nom de lieu lisible.
-- La stratégie de mise en cache des données Contentful, si elle est modifiée.
-- L'intégration complète du récit photographique dans le modèle de données et la présentation, si elle reste à réaliser.
-
-Une intention ou une piste de conception ne doit pas être présentée comme une fonctionnalité terminée.
+Ces points constituent des pistes de travail, pas des décisions d'architecture supplémentaires.
 
 ---
 
-*Ce document décrit les décisions structurantes connues à ce stade. Il doit évoluer avec le projet et être corrigé si l'implémentation réelle diverge d'un choix documenté.*
+*Ce document doit rester concis et refléter l'implémentation réelle. Toute évolution significative d'une décision doit être répercutée ici et, si nécessaire, dans le README.*

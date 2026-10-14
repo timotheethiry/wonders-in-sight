@@ -1,59 +1,51 @@
 # Wonders In Sight
 
-Galerie photographique personnelle — Next.js, React et Contentful
+Galerie photographique personnelle développée avec Next.js, React, TypeScript et Contentful.
 
-## Description
+## Présentation
 
-Wonders In Sight est un site personnel consacré à la photographie. Il propose deux expériences complémentaires : une sélection éditoriale sur la page d'accueil et des galeries thématiques permettant d'explorer les photographies par sujet.
+Wonders In Sight propose deux expériences complémentaires : une sélection éditoriale sur la page d’accueil et des galeries permettant d’explorer les photographies par thème.
 
-Le projet privilégie une approche minimaliste et contemplative, dans laquelle les photographies occupent la place centrale. La typographie, les transitions et les interactions accompagnent la consultation sans détourner l'attention des images.
+L’interface privilégie une approche éditoriale et minimaliste, plaçant les photographies au centre de l’expérience.
 
-Le site s'appuie sur Contentful pour la gestion des photographies et sur Next.js pour le rendu des pages, le routage et le référencement.
+## Fonctionnalités
 
-## Fonctionnalités principales
-
-- **Sélection éditoriale** : principe d'une sélection de photographies mises en avant sur la page d'accueil, distincte du classement thématique.
-- **Galeries thématiques** : pages dédiées aux différents thèmes photographiques.
-- **Modale photographique** : affichage agrandi des images, avec titre, lieu et récit éventuel.
-- **Navigation** : accès aux pages thématiques par leur URL et depuis la navigation du site.
-- **Mode clair et mode sombre** : prise en compte des préférences du système et possibilité de choisir son mode d'affichage.
-- **Gestion des contenus** : récupération des photographies et de leurs métadonnées depuis Contentful.
-- **Référencement** : prise en compte des métadonnées et du partage des contenus.
-- **Mise en page responsive** : adaptation aux différentes tailles d'écran.
+- **Accueil éditorial** : sélection indépendante des galeries thématiques, pilotée par le champ Contentful `featuredOnHome`.
+- **Galeries thématiques** : pages accessibles via `/theme/[slug]`.
+- **Consultation des photos** : galerie en colonnes CSS et modale native HTML `<dialog>` avec animations.
+- **Navigation** : accès aux thèmes depuis l’interface commune.
+- **Modes clair et sombre** : présentation adaptée à chaque mode.
+- **Contentful** : récupération des photographies et de leurs métadonnées.
+- **SEO** : métadonnées globales et spécifiques aux pages thématiques.
+- **Responsive design** : interface adaptée aux différentes tailles d’écran.
 
 ## Stack technique
 
 | Technologie | Utilisation |
 | --- | --- |
-| Next.js 16 — App Router | Routage, rendu des pages et métadonnées |
+| Next.js 16 — App Router | Routage, rendu et métadonnées |
 | React | Composants et interactions |
-| TypeScript | Typage et fiabilité du code |
-| Tailwind CSS v4 | Mise en forme |
-| Contentful | Gestion des contenus photographiques |
-| npm | Gestion des dépendances |
-| Vercel | Plateforme de déploiement retenue |
+| TypeScript | Typage |
+| Tailwind CSS v4 | Styles et responsive design |
+| Contentful | Gestion des contenus |
+| npm / Git | Dépendances et versions |
+| Vercel | Plateforme de déploiement prévue |
 
 ## Architecture
 
-L'application repose sur deux types de pages principaux :
+Les principales routes sont :
 
-- `/` : page d'accueil présentant une sélection éditoriale.
-- `/theme/[slug]` : page thématique identifiée par un slug.
+- `/` : sélection éditoriale.
+- `/theme/[slug]` : galerie thématique. Un slug inconnu renvoie une page 404.
 
-Les thèmes actuellement définis sont :
+Les thèmes sont centralisés dans `src/data/themes.ts` :
 
 - `paysages`
 - `structure`
 - `voyages`
 - `nature`
 
-La configuration des thèmes est centralisée dans `src/data/themes.ts`, afin de faciliter leur évolution tout en conservant des URL stables.
-
-Le composant `src/components/PhotoGallery.tsx` est partagé entre les pages. Il gère l'affichage des photographies et leur consultation dans une modale native `<dialog>`. La galerie utilise une mise en page en colonnes CSS et des animations d'ouverture et de fermeture.
-
-La récupération et la transformation des données du CMS sont centralisées dans `src/lib/contentful.ts`. Les pages utilisent ensuite le composant de galerie pour afficher les photographies.
-
-### Organisation des principaux fichiers
+### Fichiers principaux
 
 ```text
 src/
@@ -73,27 +65,33 @@ src/
     └── contentful.ts
 ```
 
-Cette arborescence présente les principaux fichiers connus du projet ; elle ne constitue pas un inventaire exhaustif.
+`src/lib/contentful.ts` centralise la récupération et la transformation des contenus. `PhotoGallery.tsx` est partagé entre les pages. Le layout global intègre notamment l’en-tête et le pied de page.
+
+Cette arborescence présente les principaux fichiers, sans prétendre être exhaustive.
 
 ## Contentful
 
-Les photographies sont récupérées depuis le type de contenu `photoWondersInSight`.
+Les photographies proviennent du type de contenu `photoWondersInSight`. Le module `src/lib/contentful.ts` initialise le client, récupère les entrées et prépare les données consommées par les pages. Les entrées sans URL d’image exploitable sont écartées et les URL commençant par `//` sont converties en HTTPS.
 
-Le module `src/lib/contentful.ts` :
+Les données préparées comprennent notamment :
 
-- initialise le client Contentful à partir des variables d'environnement ;
-- récupère les entrées photographiques avec `include: 1` pour accéder aux ressources liées, notamment aux fichiers image ;
-- transforme les données du CMS en objets consommés par la galerie ;
-- convertit les URL d'images commençant par `//` en URL HTTPS ;
-- écarte les entrées dont la ressource image ou l'URL du fichier est absente.
+| Propriété | Rôle |
+| --- | --- |
+| `id` | Identifiant de la photographie |
+| `title` | Titre |
+| `theme` | Slug du thème |
+| `image` | URL de l’image |
+| `alt` | Texte alternatif |
+| `location` | Coordonnées géographiques |
+| `locationName` | Nom lisible du lieu |
 
-Les données de la galerie comprennent notamment les propriétés `id`, `title`, `theme`, `lieu`, `image` et `alt`. Les identifiants des entrées Contentful sont des chaînes de caractères.
+La sélection d’accueil repose sur `featuredOnHome` et conserve actuellement l’ordre de réception des photographies depuis Contentful.
 
-**Localisation :** Contentful fournit des coordonnées géographiques (`lat` et `lon`) dans le champ `location`. À ce stade, ces coordonnées peuvent être affichées telles quelles dans les informations de la photographie. Leur conversion en nom de lieu lisible constitue une évolution distincte.
+Aucun géocodage n’est effectué : les coordonnées et le nom du lieu sont fournis séparément par le CMS.
 
-### Variables d'environnement
+### Configuration
 
-Créer un fichier `.env.local` à la racine du projet et y définir :
+Créer un fichier `.env.local` à la racine du projet :
 
 ```dotenv
 CONTENTFUL_SPACE_ID=...
@@ -101,21 +99,13 @@ CONTENTFUL_ACCESS_TOKEN=...
 CONTENTFUL_ENVIRONMENT=master
 ```
 
-`CONTENTFUL_ENVIRONMENT` est facultative dans le code actuel : si elle n'est pas définie, l'environnement `master` est utilisé.
+`CONTENTFUL_ENVIRONMENT` est facultative : sa valeur par défaut est `master`.
 
-Les valeurs réelles doivent rester confidentielles. Le fichier `.env.local` ne doit pas être versionné dans Git. Les variables nécessaires à Contentful doivent également être configurées dans l'environnement de déploiement.
+Les identifiants doivent rester confidentiels. Ne jamais versionner `.env.local` ni exposer les jetons au navigateur. Le client Contentful est réservé au serveur via `server-only`. Les variables nécessaires doivent également être configurées dans l’environnement de déploiement.
 
-Le client Contentful est réservé au serveur via l'import `server-only`. Les identifiants et jetons d'accès ne doivent pas être exposés au navigateur.
+## Installation et développement
 
-## Installation et lancement
-
-### Prérequis
-
-- [Node.js](https://nodejs.org/)
-- npm
-- Un accès à Contentful et les paramètres nécessaires à la connexion au CMS
-
-### Installation
+**Prérequis :** Node.js, npm et un accès configuré à Contentful.
 
 ```bash
 git clone <URL_DU_DEPOT>
@@ -123,15 +113,13 @@ cd <NOM_DU_DEPOT>
 npm install
 ```
 
-Configurer ensuite les variables d'environnement décrites dans la section Contentful.
-
-### Développement
+Configurer ensuite `.env.local`, puis lancer le serveur :
 
 ```bash
 npm run dev
 ```
 
-L'application est normalement accessible à l'adresse [http://localhost:3000](http://localhost:3000).
+L’application est normalement accessible sur [http://localhost:3000](http://localhost:3000).
 
 ### Vérification avant livraison
 
@@ -140,37 +128,32 @@ npx tsc --noEmit
 npm run build
 ```
 
-La première commande vérifie les types TypeScript. La seconde vérifie la compilation de production. Les commandes de lint et de test sont à exécuter selon les scripts définis dans `package.json`.
+Les scripts de lint et de test éventuels sont à consulter dans `package.json`.
 
-### Chargement asynchrone
-
-La récupération des photographies depuis Contentful est asynchrone. Les pages concernées encadrent les composants qui attendent les données avec React `<Suspense>`, afin de permettre à Next.js de gérer l'affichage pendant leur chargement.
-
-Cette utilisation de `<Suspense>` gère l'attente des données ; elle ne constitue pas, à elle seule, une stratégie de mise en cache.
+Les pages récupèrent les contenus de manière asynchrone et utilisent React `Suspense` pour encadrer l’attente des données. Cela ne définit pas, à lui seul, une stratégie de mise en cache.
 
 ## Principes de conception
 
-- Placer la photographie au centre de l'expérience.
-- Distinguer la sélection éditoriale de l'accueil des galeries thématiques.
-- Centraliser la configuration des thèmes.
-- Réutiliser les composants lorsque cela simplifie réellement la maintenance.
-- Privilégier les solutions natives et les dépendances minimales.
-- Maintenir une expérience cohérente entre les modes clair et sombre.
-- Préserver la lisibilité, l'accessibilité et les performances.
-- Concevoir les interactions et les animations au service de la contemplation.
-- Séparer la récupération des contenus du CMS de leur présentation.
-- Ne jamais exposer les secrets de connexion à Contentful.
+- Placer les photographies au centre de l’expérience.
+- Distinguer la sélection éditoriale des galeries thématiques.
+- Centraliser les données et la configuration des thèmes.
+- Séparer la récupération des contenus de leur présentation.
+- Privilégier les solutions natives et limiter les dépendances.
+- Préserver l’accessibilité, la lisibilité et les performances.
+- Réutiliser les variables visuelles existantes.
+- Ne jamais exposer les secrets de connexion.
+- Éviter les modifications architecturales sans nécessité identifiée.
 
 ## Documentation complémentaire
 
-- [Décisions structurantes](./docs/decisions-structurantes.md)
-
-Ce document rassemble les principaux choix techniques et éditoriaux du projet, leur justification et les principes à conserver lors des évolutions.
+Voir [`docs/decisions-structurantes.md`](./docs/decisions-structurantes.md) pour les choix techniques et éditoriaux à préserver lors des évolutions.
 
 ## Déploiement
 
-Le déploiement est prévu sur [Vercel](https://vercel.com/). La configuration de production doit inclure les variables d'environnement nécessaires à Contentful, sans exposer les jetons d'accès au client.
+Le déploiement est prévu sur [Vercel](https://vercel.com/). Les variables d’environnement nécessaires à Contentful doivent y être configurées.
 
 ## Licence
 
-La licence du projet reste à préciser. Aucun régime de licence particulier n'est présumé dans cette documentation.
+La licence du projet reste à préciser. Aucun régime de licence particulier n’est présumé.
+
+*Ce document doit rester concis et refléter l'implémentation réelle, en conservant ce qui est utile au quotidien. Toute évolution significative d'une décision doit être répercutée ici et, si nécessaire, dans le `docs/decisions-structurantes.md`.*
