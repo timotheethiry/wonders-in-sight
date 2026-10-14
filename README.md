@@ -4,7 +4,7 @@ Galerie photographique personnelle développée avec Next.js, React, TypeScript,
 
 ## Présentation
 
-Wonders In Sight propose deux expériences complémentaires : une sélection éditoriale sur la page d’accueil et des galeries permettant d’explorer les photographies par thème.
+Wonders In Sight propose une sélection éditoriale sur la page d’accueil et des galeries permettant d’explorer les photographies par thème.
 
 L’interface privilégie une approche minimaliste et contemplative, centrée sur les images.
 
@@ -12,10 +12,11 @@ L’interface privilégie une approche minimaliste et contemplative, centrée su
 
 - **Accueil éditorial** : sélection indépendante des galeries thématiques, pilotée par le champ Contentful `featuredOnHome`.
 - **Galeries thématiques** : pages dédiées accessibles via `/theme/[slug]`.
+- **Page À propos** : présentation personnelle, portrait et origine du projet.
 - **Consultation des photos** : galerie responsive en colonnes CSS et modale native `<dialog>` avec animations d’ouverture et de fermeture.
 - **Navigation** : en-tête, pied de page, navigation thématique et transitions entre les pages.
 - **Expérience utilisateur** : animations d’entrée, chargements progressifs avec React `Suspense`, squelettes de chargement et page 404 personnalisée.
-- **Thèmes clair et sombre** : thème sombre par défaut, thème clair alternatif et mémorisation du choix.
+- **Thèmes clair et sombre** : thème sombre par défaut, thème clair alternatif, mémorisation du choix et favicon adapté au thème sélectionné.
 - **SEO et accessibilité** : métadonnées globales et thématiques, Open Graph et prise en compte de la préférence de réduction des mouvements.
 - **Images optimisées** : variantes WebP servies par Contentful, adaptées à la grille et à l’affichage agrandi.
 
@@ -38,6 +39,7 @@ L’interface privilégie une approche minimaliste et contemplative, centrée su
 
 - `/` : sélection éditoriale.
 - `/theme/[slug]` : galerie thématique ; un slug inconnu renvoie une page 404 personnalisée.
+- `/a-propos` : présentation personnelle et origine du projet.
 - `not-found.tsx` : page 404 personnalisée.
 
 Les thèmes sont centralisés dans `src/data/themes.ts` :
@@ -57,6 +59,8 @@ src/
 │   ├── page.tsx
 │   ├── not-found.tsx
 │   ├── globals.css
+│   ├── a-propos/
+│   │   └── page.tsx
 │   └── theme/
 │       └── [slug]/
 │           └── page.tsx
@@ -71,16 +75,21 @@ src/
 │   └── themes.ts
 └── lib/
     └── contentful.ts
+
+public/
+└── images/
+    └── about/
+        └── portrait.JPG
 ```
 
-Cette arborescence présente les principaux fichiers, sans prétendre être exhaustive.
+Cette arborescence présente les principaux fichiers, sans prétendre être exhaustive. Les icônes du site sont également stockées dans `public/images/`.
 
 - `src/lib/contentful.ts` centralise la récupération et la transformation des contenus.
 - `PhotoGallery.tsx` est partagé entre l’accueil et les pages thématiques.
-- `ThemeToggle.tsx` gère le changement de thème et la mémorisation du choix.
+- `ThemeToggle.tsx` gère le changement de thème, la mémorisation du choix et la synchronisation du favicon.
 - `HomeEntrance.tsx` gère l’animation d’entrée de la galerie d’accueil.
 - `GallerySkeleton.tsx` fournit un état de chargement réutilisable.
-- `layout.tsx` intègre les éléments communs et les métadonnées globales.
+- `layout.tsx` intègre les éléments communs, les métadonnées globales et l’initialisation du thème.
 - `template.tsx` applique la transition d’entrée lors des navigations.
 - `globals.css` centralise les variables visuelles, les transitions et les animations globales.
 
@@ -98,7 +107,7 @@ Les URL sont optimisées via l’API Images de Contentful :
 - **Modale** : largeur maximale de 1600 px.
 - **Format** : WebP.
 
-Les fichiers sources sont préparés avant leur import dans Contentful. Le projet utilise actuellement des balises HTML `<img>` et non le composant `next/image`.
+Les fichiers sources sont préparés avant leur import dans Contentful. Le projet utilise actuellement des balises HTML `<img>` pour les photographies de la galerie, et le composant `next/image` pour le portrait de la page 'À propos'.
 
 ### Champs et données
 

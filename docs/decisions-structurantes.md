@@ -115,6 +115,16 @@ Les pages d'accueil et les pages thématiques disposent de métadonnées adapté
 
 Les textes alternatifs des images sont fournis par le champ Contentful `alt`.
 
+### 3.4. Page « À propos »
+
+**Décision :** proposer une page dédiée à la présentation du photographe et à l'origine du projet.
+
+La page `/a-propos` présente un portrait et un texte personnel qui contextualise la démarche photographique et la création de Wonders In Sight.
+
+Le portrait est stocké dans `public/images/about/portrait.JPG`. La mise en page s'adapte à la taille de l'écran afin de préserver l'équilibre entre le texte et l'image.
+
+Cette page dispose de ses propres métadonnées. Elle complète la présentation du projet sans détourner les pages principales de leur vocation photographique.
+
 ## 4. Galerie et consultation
 
 ### 4.1. Galerie partagée
@@ -175,6 +185,14 @@ Les couleurs reposent sur les variables CSS du projet. Les transitions accompagn
 
 La modale photographique conserve volontairement un fond transparent et une typographie claire, indépendamment du thème global, afin de privilégier la consultation des images.
 
+### 5.3. Favicon adaptatif
+
+**Décision :** utiliser une déclinaison du favicon adaptée au thème actif.
+
+Les fichiers `public/images/favicon-dark.png` et `public/images/favicon-light.png` correspondent respectivement aux modes sombre et clair.
+
+Le composant `ThemeToggle` synchronise le favicon avec le thème sélectionné en mettant à jour l'élément `link[rel="icon"]`. Les deux déclinaisons reprennent le même symbole graphique afin de préserver la cohérence de l'identité visuelle.
+
 ## 6. Principes transversaux
 
 Toute évolution doit respecter les principes suivants :
@@ -193,7 +211,7 @@ Les éléments suivants restent à étudier avant ou après la mise en productio
 
 - La configuration des variables d'environnement Contentful dans Vercel.
 - Le déploiement de production et la vérification des pages, des images et des métadonnées sur le domaine final.
-- L'intérêt éventuel d'une stratégie de mise en cache, de l'optimisation des requêtes Contentful, et d'optimisations complémentaires du chargement des images.
+- L'intérêt éventuel d'une stratégie de mise en cache, de l'optimisation des requêtes Contentful et d'optimisations complémentaires du chargement des images.
 
 Ces points ne constituent pas des décisions d'architecture supplémentaires.
 
