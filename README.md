@@ -4,23 +4,24 @@ Galerie photographique personnelle développée avec Next.js, React, TypeScript,
 
 ## Présentation
 
-Wonders In Sight propose deux expériences complémentaires : une sélection éditoriale sur la page d'accueil et des galeries permettant d'explorer les photographies par thème.
+Wonders In Sight propose deux expériences complémentaires : une sélection éditoriale sur la page d’accueil et des galeries permettant d’explorer les photographies par thème.
 
-L'interface privilégie une approche minimaliste et contemplative, centrée sur les images.
+L’interface privilégie une approche minimaliste et contemplative, centrée sur les images.
 
 ## Fonctionnalités
 
 - **Accueil éditorial** : sélection indépendante des galeries thématiques, pilotée par le champ Contentful `featuredOnHome`.
 - **Galeries thématiques** : pages dédiées accessibles via `/theme/[slug]`.
-- **Consultation des photos** : galerie responsive en colonnes CSS et modale native `<dialog>` avec animations.
-- **Navigation** : en-tête et pied de page communs, accès aux thèmes depuis l'interface.
-- **Transitions et animations** : apparition progressive du contenu, animation d'entrée de la galerie d'accueil et transitions entre les pages.
-- **Chargement progressif** : squelettes de chargement avec React `Suspense`.
-- **Page 404 personnalisée** : présentation cohérente avec l'identité visuelle du site.
-- **Modes clair et sombre** : deux variantes visuelles adaptées à l'identité du site.
+- **Consultation des photos** : galerie responsive en colonnes CSS et modale native `<dialog>` avec animations d’ouverture et de fermeture.
+- **Navigation** : en-tête et pied de page communs, navigation thématique et accès à la présentation du site.
+- **Animations** : apparition progressive du contenu, animation d’entrée de la galerie d’accueil et transitions entre les pages.
+- **Chargement progressif** : composants de chargement avec React `Suspense`.
+- **Page 404 personnalisée** : présentation cohérente avec l’identité visuelle du site.
+- **Thèmes clair et sombre** : sélecteur avec mémorisation du choix, thème sombre par défaut et thème clair alternatif.
 - **Contentful** : récupération des photographies et de leurs métadonnées.
 - **SEO** : métadonnées globales, Open Graph et métadonnées spécifiques aux pages thématiques.
-- **Responsive design** : interface adaptée aux différentes tailles d'écran.
+- **Responsive design** : interface adaptée aux différentes tailles d’écran.
+- **Accessibilité** : prise en compte de la préférence de réduction des mouvements.
 
 ## Stack technique
 
@@ -65,6 +66,7 @@ src/
 ├── components/
 │   ├── Header.tsx
 │   ├── Footer.tsx
+│   ├── ThemeToggle.tsx
 │   ├── PhotoGallery.tsx
 │   ├── HomeEntrance.tsx
 │   └── GallerySkeleton.tsx
@@ -77,20 +79,21 @@ src/
 Cette arborescence présente les principaux fichiers, sans prétendre être exhaustive.
 
 - `src/lib/contentful.ts` centralise la récupération et la transformation des contenus.
-- `PhotoGallery.tsx` est partagé entre l'accueil et les pages thématiques.
-- `HomeEntrance.tsx` gère l'animation d'entrée de la galerie d'accueil.
+- `PhotoGallery.tsx` est partagé entre l’accueil et les pages thématiques.
+- `ThemeToggle.tsx` gère le changement de thème et la mémorisation du choix.
+- `HomeEntrance.tsx` gère l’animation d’entrée de la galerie d’accueil.
 - `GallerySkeleton.tsx` fournit un état de chargement réutilisable.
-- `layout.tsx` intègre les éléments communs de l'interface.
-- `template.tsx` applique la transition d'entrée du contenu lors des navigations.
-- `globals.css` centralise les styles globaux, les variables visuelles et les animations.
+- `layout.tsx` intègre les éléments communs de l’interface et les métadonnées globales.
+- `template.tsx` applique la transition d’entrée du contenu lors des navigations.
+- `globals.css` centralise les variables visuelles, les transitions et les animations globales.
 
 ## Contentful
 
 Les photographies proviennent du type de contenu `photoWondersInSight`. Le module `src/lib/contentful.ts` initialise le client Contentful, récupère les entrées et prépare les données consommées par les pages.
 
-Les entrées sans URL d'image exploitable sont écartées. Les URL commençant par `//` sont converties en HTTPS.
+Les entrées sans URL d’image exploitable sont écartées. Les URL commençant par `//` sont converties en HTTPS.
 
-Les images sont optimisées à la livraison par Contentful au format WebP, avec une largeur de 800 px pour la galerie et de 1600 px pour l'affichage agrandi.
+Les images sont optimisées à la livraison par Contentful au format WebP, avec une largeur de 800 px pour la galerie et de 1600 px pour l’affichage agrandi.
 
 Les données préparées comprennent notamment :
 
@@ -99,8 +102,8 @@ Les données préparées comprennent notamment :
 | `id` | Identifiant de la photographie |
 | `title` | Titre |
 | `theme` | Slug du thème |
-| `image` | URL de l'image destinée à la galerie |
-| `imageFull` | URL de l'image destinée à la modale |
+| `image` | URL de l’image destinée à la galerie |
+| `imageFull` | URL de l’image destinée à la modale |
 | `alt` | Texte alternatif |
 | `location` | Coordonnées géographiques |
 | `locationName` | Nom lisible du lieu |
@@ -108,11 +111,11 @@ Les données préparées comprennent notamment :
 
 ### Sélection éditoriale
 
-Le champ booléen `featuredOnHome` détermine les photographies affichées sur l'accueil.
+Le champ booléen `featuredOnHome` détermine les photographies affichées sur l’accueil.
 
-`getHomePhotos()` récupère les photographies sélectionnées, tandis que `getContentfulPhotos()` conserve les photographies destinées aux galeries thématiques. La sélection de l'accueil suit actuellement l'ordre de réception des données de Contentful.
+`getHomePhotos()` récupère les photographies sélectionnées, tandis que `getContentfulPhotos()` conserve les photographies destinées aux galeries thématiques. La sélection de l’accueil suit actuellement l’ordre de réception des données de Contentful.
 
-Aucun géocodage n'est effectué : les coordonnées et le nom du lieu sont fournis séparément par le CMS.
+Les coordonnées et le nom lisible du lieu sont fournis séparément par le CMS. Aucun géocodage n’est effectué.
 
 ### Configuration
 
@@ -126,7 +129,7 @@ CONTENTFUL_ENVIRONMENT=master
 
 `CONTENTFUL_ENVIRONMENT` est facultative : sa valeur par défaut est `master`.
 
-Les identifiants doivent rester confidentiels. Ne jamais versionner `.env.local` ni exposer les jetons au navigateur. Le client Contentful est réservé au serveur via `server-only`. Les variables nécessaires doivent également être configurées dans l'environnement de déploiement.
+Les identifiants doivent rester confidentiels. Ne jamais versionner `.env.local` ni exposer les jetons au navigateur. Le client Contentful est réservé au serveur via `server-only`. Les variables nécessaires doivent également être configurées dans l’environnement de déploiement.
 
 ## Installation et développement
 
@@ -144,7 +147,7 @@ Configurer ensuite `.env.local`, puis lancer le serveur de développement :
 npm run dev
 ```
 
-L'application est normalement accessible sur [http://localhost:3000](http://localhost:3000).
+L’application est normalement accessible sur [http://localhost:3000](http://localhost:3000).
 
 ### Vérification avant livraison
 
@@ -154,16 +157,16 @@ npm run lint
 npm run build
 ```
 
-Les pages récupèrent les contenus de manière asynchrone et utilisent React `Suspense` pour encadrer les attentes. Les squelettes de chargement limitent les changements visuels pendant la récupération des données. L'utilisation de `Suspense` ne définit pas, à elle seule, une stratégie de mise en cache.
+Les pages récupèrent les contenus de manière asynchrone et utilisent React `Suspense` pour encadrer les attentes. Les squelettes de chargement limitent les changements visuels pendant la récupération des données. L’utilisation de `Suspense` ne définit pas, à elle seule, une stratégie de mise en cache.
 
 ## Principes de conception
 
-- Placer les photographies au centre de l'expérience.
+- Placer les photographies au centre de l’expérience.
 - Distinguer la sélection éditoriale des galeries thématiques.
 - Centraliser les données et la configuration des thèmes.
 - Séparer la récupération des contenus de leur présentation.
 - Privilégier les solutions natives et limiter les dépendances.
-- Préserver l'accessibilité, la lisibilité et les performances.
+- Préserver l’accessibilité, la lisibilité et les performances.
 - Respecter les préférences de réduction des mouvements.
 - Réutiliser les variables visuelles existantes.
 - Ne jamais exposer les secrets de connexion.
@@ -175,12 +178,12 @@ Voir [`docs/decisions-structurantes.md`](./docs/decisions-structurantes.md) pour
 
 ## Déploiement
 
-Le déploiement est prévu sur [Vercel](https://vercel.com/). Les variables d'environnement nécessaires à Contentful doivent y être configurées.
+Le déploiement est prévu sur [Vercel](https://vercel.com/). Les variables d’environnement nécessaires à Contentful doivent y être configurées.
 
 ## Licence
 
-La licence du projet reste à préciser. Aucun régime de licence particulier n'est présumé.
+La licence du projet reste à préciser. Aucun régime de licence particulier n’est présumé.
 
 ---
 
-*Ce document doit rester concis et refléter l'implémentation réelle. Toute évolution significative doit être répercutée ici et, si nécessaire, dans `docs/decisions-structurantes.md`.*
+*Ce document doit rester concis et refléter l’implémentation réelle. Toute évolution significative doit être répercutée ici et, si nécessaire, dans `docs/decisions-structurantes.md`.*

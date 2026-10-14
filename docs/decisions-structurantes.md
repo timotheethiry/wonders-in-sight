@@ -153,9 +153,11 @@ Les pages thématiques disposent d'un titre en police serif et d'une description
 
 **Décision :** proposer des modes clair et sombre cohérents avec la palette du projet.
 
-Le mode sombre est utilisé par défaut et l'utilisateur peut choisir son mode d'affichage.
+Le mode sombre est utilisé par défaut. Un contrôle dans l'en-tête permet de basculer entre les deux modes, et le choix est conservé dans localStorage sous la clé wis-theme.
 
-Les composants doivent réutiliser les variables et classes de couleur existantes plutôt que d'introduire des couleurs arbitraires.
+Les couleurs reposent sur les variables CSS du projet. Les transitions accompagnent le changement de thème sans ajouter de dépendance.
+
+La modale photographique conserve volontairement un fond transparent et une typographie claire, indépendamment du thème global, afin de privilégier la consultation des images.
 
 ## 6. Principes transversaux
 
