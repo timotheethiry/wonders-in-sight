@@ -1,6 +1,6 @@
 # Wonders In Sight
 
-Galerie photographique personnelle développée avec Next.js, React, TypeScript et Contentful.
+Galerie photographique personnelle développée avec Next.js, React, TypeScript, Tailwind CSS et Contentful.
 
 ## Présentation
 
@@ -13,8 +13,11 @@ L’interface privilégie une approche éditoriale et minimaliste, plaçant les 
 - **Accueil éditorial** : sélection indépendante des galeries thématiques, pilotée par le champ Contentful `featuredOnHome`.
 - **Galeries thématiques** : pages accessibles via `/theme/[slug]`.
 - **Consultation des photos** : galerie responsive en colonnes CSS et modale native HTML `<dialog>` avec animations.
-- **Interactions** : variation de luminosité au survol et curseur classique indiquant les photos cliquables.
+- **Interactions** : variation de luminosité au survol et curseur indiquant les photographies cliquables.
 - **Navigation** : en-tête et pied de page communs, accès aux thèmes depuis l’interface.
+- **Transitions et animations** : apparition progressive du contenu, animation d’entrée de la galerie d’accueil et transitions entre les pages.
+- **Chargement progressif** : squelettes de chargement pour les galeries, avec React `Suspense`.
+- **Page 404 personnalisée** : présentation cohérente avec l’identité visuelle du site.
 - **Modes clair et sombre** : thème sombre privilégié, thème clair en alternative.
 - **Contentful** : récupération des photographies et de leurs métadonnées.
 - **SEO** : métadonnées globales, Open Graph et métadonnées spécifiques aux pages thématiques.
@@ -38,6 +41,7 @@ Les principales routes sont :
 
 - `/` : sélection éditoriale.
 - `/theme/[slug]` : galerie thématique. Un slug inconnu renvoie une page 404.
+- `not-found.tsx` : page 404 personnalisée.
 
 Les thèmes sont centralisés dans `src/data/themes.ts` :
 
@@ -52,23 +56,30 @@ Les thèmes sont centralisés dans `src/data/themes.ts` :
 src/
 ├── app/
 │   ├── layout.tsx
+│   ├── template.tsx
 │   ├── page.tsx
+│   ├── not-found.tsx
+│   ├── globals.css
 │   └── theme/
 │       └── [slug]/
 │           └── page.tsx
 ├── components/
 │   ├── Header.tsx
 │   ├── Footer.tsx
-│   └── PhotoGallery.tsx
+│   ├── PhotoGallery.tsx
+│   ├── HomeEntrance.tsx
+│   └── GallerySkeleton.tsx
 ├── data/
 │   └── themes.ts
 └── lib/
     └── contentful.ts
 ```
 
-`src/lib/contentful.ts` centralise la récupération et la transformation des contenus. `PhotoGallery.tsx` est partagé entre les pages. Le layout global intègre notamment l’en-tête et le pied de page.
-
 Cette arborescence présente les principaux fichiers, sans prétendre être exhaustive.
+
+`src/lib/contentful.ts` centralise la récupération et la transformation des contenus. `PhotoGallery.tsx` est partagé entre l’accueil et les pages thématiques. `HomeEntrance.tsx` gère l’animation d’entrée de la galerie d’accueil, tandis que `GallerySkeleton.tsx` fournit un état de chargement réutilisable.
+
+Le layout global intègre l’en-tête et le pied de page. `template.tsx` applique la transition d’entrée du contenu lors des navigations. Les animations sont définies dans `globals.css` et respectent la préférence système de réduction des mouvements.
 
 ## Contentful
 
@@ -132,7 +143,7 @@ npm run lint
 npm run build
 ```
 
-Les pages récupèrent les contenus de manière asynchrone et utilisent React `Suspense` pour encadrer l’attente des données. Cela ne définit pas, à lui seul, une stratégie de mise en cache.
+Les pages récupèrent les contenus de manière asynchrone et utilisent React `Suspense` pour encadrer les attentes. Des squelettes de chargement limitent les changements visuels pendant la récupération des données. L’utilisation de `Suspense` ne définit pas, à elle seule, une stratégie de mise en cache.
 
 ## Principes de conception
 
@@ -142,6 +153,7 @@ Les pages récupèrent les contenus de manière asynchrone et utilisent React `S
 - Séparer la récupération des contenus de leur présentation.
 - Privilégier les solutions natives et limiter les dépendances.
 - Préserver l’accessibilité, la lisibilité et les performances.
+- Respecter les préférences de réduction des mouvements.
 - Réutiliser les variables visuelles existantes.
 - Ne jamais exposer les secrets de connexion.
 - Éviter les modifications architecturales sans nécessité identifiée.
@@ -158,4 +170,4 @@ Le déploiement est prévu sur [Vercel](https://vercel.com/). Les variables d’
 
 La licence du projet reste à préciser. Aucun régime de licence particulier n’est présumé.
 
-*Ce document doit rester concis et refléter l'implémentation réelle, en conservant ce qui est utile au quotidien. Toute évolution significative d'une décision doit être répercutée ici et, si nécessaire, dans le `docs/decisions-structurantes.md`.*
+*Ce document doit rester concis et refléter l’implémentation réelle. Toute évolution significative d’une décision doit être répercutée ici et, si nécessaire, dans `docs/decisions-structurantes.md`.*

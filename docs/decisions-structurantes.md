@@ -1,6 +1,6 @@
 # Wonders In Sight — Décisions structurantes
 
-Ce document rassemble les décisions techniques, fonctionnelles et éditoriales qui doivent guider l'évolution de Wonders In Sight. Il complète le [README](../readme.md), sans remplacer la documentation de l'installation ou du fonctionnement du projet.
+Ce document rassemble les décisions techniques, fonctionnelles et éditoriales qui guident l'évolution de Wonders In Sight. Il complète le [README](../README.md), sans remplacer la documentation de l'installation ou du fonctionnement du projet.
 
 Les décisions décrivent l'architecture retenue et les contraintes à préserver. Les pistes d'évolution ne sont pas considérées comme des fonctionnalités réalisées.
 
@@ -21,7 +21,8 @@ Vercel est la plateforme de déploiement retenue, pour son adaptation à l'écos
 - `src/lib/contentful.ts` centralise l'accès au CMS et l'adaptation des données.
 - `src/data/themes.ts` centralise la configuration des thèmes.
 - `src/components/PhotoGallery.tsx` gère l'affichage des photographies et leur consultation.
-- `src/app/` contient les pages et le layout de l'application.
+- `src/app/` contient les pages, le layout et le template de l'application.
+- `src/components/` contient les composants d'interface réutilisables, notamment les états de chargement.
 
 Les composants de présentation ne doivent pas dépendre directement de la structure brute des réponses de Contentful.
 
@@ -39,7 +40,9 @@ Toute nouvelle dépendance doit répondre à un besoin identifié et faire l'obj
 
 Le type de contenu utilisé est `photoWondersInSight`. Le module `src/lib/contentful.ts` récupère les entrées, notamment avec `include: 1` pour accéder aux ressources liées, et transforme les données en objets adaptés à l'application.
 
-Le modèle actuel exploite notamment les identifiants Contentful, le titre, la catégorie, l'image et ses métadonnées. Les identifiants restent des chaînes de caractères. Les URL d'images commençant par `//` sont converties en URL HTTPS et les entrées sans image exploitable sont écartées.
+Le modèle exploité comprend notamment les identifiants Contentful, le titre, le thème, l'image et ses métadonnées. Les identifiants restent des chaînes de caractères. Les URL d'images commençant par `//` sont converties en URL HTTPS et les entrées sans image exploitable sont écartées.
+
+La localisation utilise deux champs distincts : `location` pour les coordonnées géographiques et `locationName` pour le nom lisible du lieu. Aucun géocodage n'est effectué.
 
 Toute évolution du modèle Contentful doit être répercutée dans la couche d'adaptation et dans les types de l'application.
 
@@ -49,13 +52,13 @@ Toute évolution du modèle Contentful doit être répercutée dans la couche d'
 
 **Décision :** distinguer la sélection éditoriale de la page d'accueil des galeries thématiques.
 
-Le champ Contentful `featuredOnHome` permet d'identifier les photographies mises en avant sur l'accueil. Une photographie peut ainsi figurer dans cette sélection tout en restant accessible depuis son thème.
+Le champ Contentful `featuredOnHome` identifie les photographies mises en avant sur l'accueil. Une photographie peut ainsi figurer dans cette sélection tout en restant accessible depuis son thème.
 
 L'ordre de la sélection suit actuellement l'ordre de réception des photographies depuis Contentful.
 
 **Justification :** l'accueil constitue un choix éditorial indépendant du classement thématique.
 
-### 2.3. Thèmes et localisation
+### 2.3. Thèmes
 
 **Décision :** centraliser les thèmes dans `src/data/themes.ts`, avec un slug, un libellé et une description.
 
@@ -68,9 +71,7 @@ Les slugs actuels sont :
 
 Les valeurs de thème issues de Contentful doivent correspondre aux slugs utilisés par l'application.
 
-Pour la localisation, `location` contient les coordonnées géographiques et `locationName` le nom lisible du lieu. Aucun géocodage n'est effectué.
-
-## 3. Pages et navigation
+## 3. Pages, navigation et chargement
 
 ### 3.1. Accueil et pages thématiques
 
@@ -79,17 +80,23 @@ Pour la localisation, `location` contient les coordonnées géographiques et `lo
 - `/` : sélection éditoriale indépendante des thèmes.
 - `/theme/[slug]` : galerie dédiée à un thème, accessible directement par URL et indexable.
 
-Les pages thématiques utilisent la configuration centralisée des thèmes. Un slug inconnu déclenche `notFound()`.
+Les pages thématiques utilisent la configuration centralisée des thèmes. Un slug inconnu déclenche `notFound()` et affiche la page 404 personnalisée de `src/app/not-found.tsx`.
 
 Les thèmes sans photographie ne doivent pas être proposés comme destinations dans la navigation.
 
-### 3.2. Chargement des données
+### 3.2. Chargement et transitions
 
-**Décision :** utiliser les composants serveur pour la récupération des données et React `<Suspense>` lorsque le rendu asynchrone le nécessite.
+**Décision :** utiliser les composants serveur pour la récupération des données et React `Suspense` lorsque le rendu asynchrone le nécessite.
 
 Les paramètres dynamiques sont traités conformément à la version de Next.js utilisée, notamment sous forme de `Promise` dans les pages concernées par Next.js 16.
 
-`<Suspense>` gère l'attente des données ; il ne définit pas, à lui seul, une stratégie de mise en cache.
+Les états de chargement utilisent des squelettes adaptés à la structure des pages et des galeries. `src/components/GallerySkeleton.tsx` fournit un état de chargement réutilisable, notamment dans les pages thématiques.
+
+Le template `src/app/template.tsx` permet d'appliquer une animation d'entrée au contenu lors des navigations. Des animations complémentaires accompagnent l'entrée de la marque et de la galerie d'accueil.
+
+Les animations doivent respecter la préférence système `prefers-reduced-motion`.
+
+`Suspense` gère l'attente du rendu asynchrone ; il ne définit pas, à lui seul, une stratégie de mise en cache.
 
 ### 3.3. Référencement
 
@@ -97,7 +104,7 @@ Les paramètres dynamiques sont traités conformément à la version de Next.js 
 
 Les photographies et leurs sujets doivent rester prioritaires dans les titres et descriptions, tout en conservant « Wonders In Sight » comme identité de marque.
 
-Les métadonnées spécifiques aux pages thématiques et les informations de partage doivent être maintenues en cohérence avec leur contenu.
+Les métadonnées spécifiques aux pages thématiques et les informations de partage doivent rester cohérentes avec leur contenu.
 
 ## 4. Galerie et consultation
 
@@ -108,6 +115,8 @@ Les métadonnées spécifiques aux pages thématiques et les informations de par
 Le composant reçoit des données déjà adaptées au modèle de l'application et reste indépendant de leur provenance.
 
 La galerie utilise des colonnes CSS pour obtenir une disposition de type masonry, sans dépendance dédiée. Le nombre de colonnes et la largeur maximale s'adaptent à la taille de l'écran, avec un centrage horizontal.
+
+Le composant `GallerySkeleton` fournit un état de chargement visuel cohérent avec cette présentation.
 
 ### 4.2. Modale photographique
 
@@ -139,9 +148,9 @@ Les pages thématiques comprennent un titre en police serif et une description s
 
 ### 5.2. Modes clair et sombre
 
-**Décision :** proposer un mode clair et un mode sombre, avec le mode sombre comme identité visuelle principale.
+**Décision :** proposer des modes clair et sombre en cohérence avec la palette du projet.
 
-La préférence du système est prise en compte et l'utilisateur peut choisir son mode d'affichage. Les deux modes doivent rester cohérents avec la palette définie dans le projet.
+Le mode sombre est utilisé par défaut et l'utilisateur peut choisir son mode d'affichage.
 
 Les composants réutilisent les variables et classes de couleur existantes plutôt que d'introduire des couleurs arbitraires.
 
@@ -163,7 +172,6 @@ Les éléments suivants ne doivent être considérés comme terminés qu'après 
 - L'intégration complète du champ `narrative` dans les données et l'interface.
 - La stratégie de mise en cache et d'optimisation des requêtes Contentful.
 - Les éventuelles optimisations complémentaires du chargement des images.
-- Les transitions de navigation ou effets d'entrée, s'ils sont retenus ultérieurement.
 
 Ces points constituent des pistes de travail, pas des décisions d'architecture supplémentaires.
 
