@@ -111,6 +111,7 @@ button {
 
 dialog {
     opacity: 0;
+    outline: none;
     transform: scale(0.97);
     transition:
         opacity 300ms ease,
