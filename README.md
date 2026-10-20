@@ -8,6 +8,8 @@ Wonders In Sight propose une sélection éditoriale sur la page d’accueil et d
 
 L’interface privilégie une approche minimaliste et contemplative, centrée sur les images.
 
+[Lien vers la démo](https://wonders-in-sight.vercel.app/).
+
 ## Fonctionnalités
 
 - **Accueil éditorial** : sélection indépendante des galeries thématiques, pilotée par le champ Contentful `featuredOnHome`.
