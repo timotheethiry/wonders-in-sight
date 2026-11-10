@@ -24,16 +24,16 @@ L’interface privilégie une approche minimaliste et contemplative, centrée su
 
 ## Stack technique
 
-| Technologie | Utilisation |
-| --- | --- |
-| Next.js 16 — App Router | Routage, rendu et métadonnées |
-| React 19 | Composants et interactions |
-| TypeScript | Typage |
-| Tailwind CSS v4 | Styles et responsive design |
-| Contentful | Gestion des contenus et des images |
-| npm / Git | Dépendances et versions |
-| GitHub | Hébergement du dépôt source |
-| Vercel | Plateforme de déploiement prévue |
+| Technologie             | Utilisation                        |
+| ----------------------- | ---------------------------------- |
+| Next.js 16 — App Router | Routage, rendu et métadonnées      |
+| React 19                | Composants et interactions         |
+| TypeScript              | Typage                             |
+| Tailwind CSS v4         | Styles et responsive design        |
+| Contentful              | Gestion des contenus et des images |
+| npm / Git               | Dépendances et versions            |
+| GitHub                  | Hébergement du dépôt source        |
+| Vercel                  | Plateforme de déploiement prévue   |
 
 ## Architecture
 
@@ -113,17 +113,17 @@ Les fichiers sources sont préparés avant leur import dans Contentful. Le proje
 
 ### Champs et données
 
-| Champ | Rôle |
-| --- | --- |
-| `id` | Identifiant de la photographie |
-| `title` | Titre |
-| `theme` | Slug du thème |
-| `image` | URL de l’image destinée à la galerie |
-| `imageFull` | URL de l’image destinée à la modale |
-| `alt` | Texte alternatif |
-| `location` | Coordonnées géographiques |
-| `locationName` | Nom lisible facultatif du lieu |
-| `narrative` | Texte descriptif complémentaire |
+| Champ            | Rôle                                     |
+| ---------------- | ---------------------------------------- |
+| `id`             | Identifiant de la photographie           |
+| `title`          | Titre                                    |
+| `theme`          | Slug du thème                            |
+| `image`          | URL de l’image destinée à la galerie     |
+| `imageFull`      | URL de l’image destinée à la modale      |
+| `alt`            | Texte alternatif                         |
+| `location`       | Coordonnées géographiques                |
+| `locationName`   | Nom lisible facultatif du lieu           |
+| `narrative`      | Texte descriptif complémentaire          |
 | `featuredOnHome` | Inclusion dans la sélection de l’accueil |
 
 Les coordonnées et le nom lisible du lieu sont distincts. Le nom lisible est renseigné manuellement dans Contentful. Aucun géocodage n’est effectué.
@@ -205,4 +205,4 @@ La licence du projet reste à préciser. Aucun régime de licence particulier n�
 
 ---
 
-*Ce document doit rester concis et refléter l’implémentation réelle. Toute évolution significative doit être répercutée ici et, si nécessaire, dans `docs/decisions-structurantes.md`.*
+_Ce document doit rester concis et refléter l’implémentation réelle. Toute évolution significative doit être répercutée ici et, si nécessaire, dans `docs/decisions-structurantes.md`._

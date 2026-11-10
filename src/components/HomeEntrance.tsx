@@ -1,20 +1,20 @@
-"use client";
+'use client';
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef } from 'react';
 
 export default function HomeEntrance({
-    children,
+	children,
 }: {
-    children: React.ReactNode;
+	children: React.ReactNode;
 }) {
-    const containerRef = useRef<HTMLDivElement>(null);
+	const containerRef = useRef<HTMLDivElement>(null);
 
-    useEffect(() => {
-        const container = containerRef.current;
-        if (!container) return;
+	useEffect(() => {
+		const container = containerRef.current;
+		if (!container) return;
 
-        container.classList.add("home-gallery-enter");
-    }, []);
+		container.classList.add('home-gallery-enter');
+	}, []);
 
-    return <div ref={containerRef}>{children}</div>;
+	return <div ref={containerRef}>{children}</div>;
 }

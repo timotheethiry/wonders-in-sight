@@ -1,40 +1,36 @@
-"use client";
+'use client';
 
-import { usePathname } from "next/navigation";
-import { useEffect, useRef } from "react";
+import { usePathname } from 'next/navigation';
+import { useEffect, useRef } from 'react';
 
 export default function PageTransition({
-    children,
+	children,
 }: {
-    children: React.ReactNode;
+	children: React.ReactNode;
 }) {
-    const pathname = usePathname();
-    const containerRef = useRef<HTMLDivElement>(null);
-    const isFirstRender = useRef(true);
+	const pathname = usePathname();
+	const containerRef = useRef<HTMLDivElement>(null);
+	const isFirstRender = useRef(true);
 
-    useEffect(() => {
-        const container = containerRef.current;
+	useEffect(() => {
+		const container = containerRef.current;
 
-        if (!container) return;
+		if (!container) return;
 
-        if (isFirstRender.current) {
-            isFirstRender.current = false;
+		if (isFirstRender.current) {
+			isFirstRender.current = false;
 
-            // L'accueil possède sa propre animation d'entrée.
-            if (pathname === "/") return;
-        }
+			// L'accueil possède sa propre animation d'entrée.
+			if (pathname === '/') return;
+		}
 
-        container.classList.remove("page-enter");
+		container.classList.remove('page-enter');
 
-        // Force le navigateur à réinitialiser l'animation.
-        void container.offsetWidth;
+		// Force le navigateur à réinitialiser l'animation.
+		void container.offsetWidth;
 
-        container.classList.add("page-enter");
-    }, [pathname]);
+		container.classList.add('page-enter');
+	}, [pathname]);
 
-    return (
-        <div ref={containerRef}>
-            {children}
-        </div>
-    );
+	return <div ref={containerRef}>{children}</div>;
 }

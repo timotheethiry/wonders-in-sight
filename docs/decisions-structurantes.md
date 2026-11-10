@@ -217,4 +217,4 @@ Ces points ne constituent pas des décisions d'architecture supplémentaires.
 
 ---
 
-*Ce document doit rester concis et refléter l'implémentation réelle. Toute évolution significative d'une décision doit être répercutée ici et, si nécessaire, dans le README.*
+_Ce document doit rester concis et refléter l'implémentation réelle. Toute évolution significative d'une décision doit être répercutée ici et, si nécessaire, dans le README._
