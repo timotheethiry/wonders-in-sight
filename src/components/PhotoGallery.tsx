@@ -66,11 +66,11 @@ export default function PhotoGallery({ photos }: PhotoGalleryProps) {
 
 	return (
 		<>
-			<div className="columns-2 gap-3 max-w-9/10 mx-auto md:columns-3 md:gap-4 md:max-w-5/6 lg:columns-4 lg:gap-5 lg:max-w-6/7">
+			<div className="columns-1 gap-5 max-w-full mx-auto sm:columns-2 md:columns-3 md:gap-6 lg:columns-3 lg:gap-8 lg:px-4 xl:gap-10 xl:px-8">
 				{photos.map((photo) => (
 					<article
 						key={photo.id}
-						className="mb-3 break-inside-avoid sm:mb-4 lg:mb-5"
+						className="mb-6 break-inside-avoid sm:mb-5 md:mb-6 lg:mb-8 xl:mb-10"
 					>
 						<button
 							type="button"
@@ -114,11 +114,10 @@ export default function PhotoGallery({ photos }: PhotoGalleryProps) {
 						</button>
 
 						<div
-							className={`flex min-h-0 flex-1 flex-col gap-4 overflow-hidden ${
-								selectedPhoto.narrative
-									? 'md:flex-row md:gap-8'
-									: 'md:items-start'
-							}`}
+							className={`flex min-h-0 flex-1 flex-col gap-4 overflow-hidden ${selectedPhoto.narrative
+								? 'md:flex-row md:gap-8'
+								: 'md:items-start'
+								}`}
 						>
 							<div className="flex min-h-0 shrink-0 items-center justify-center md:flex-1">
 								<img
@@ -129,9 +128,8 @@ export default function PhotoGallery({ photos }: PhotoGalleryProps) {
 							</div>
 
 							<div
-								className={`flex min-h-0 flex-1 flex-col ${
-									selectedPhoto.narrative ? 'md:w-[22rem] md:flex-none' : ''
-								}`}
+								className={`flex min-h-0 flex-1 flex-col ${selectedPhoto.narrative ? 'md:w-[22rem] md:flex-none' : ''
+									}`}
 							>
 								<div className="mb-4 shrink-0">
 									<h2 className="font-serif text-lg italic">

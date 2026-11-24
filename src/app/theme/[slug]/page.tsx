@@ -46,8 +46,8 @@ async function ThemeContent({ params }: ThemePageProps) {
 	}
 
 	return (
-		<main className="mx-auto w-full max-w-7xl px-5 py-12 sm:px-8 sm:py-16 lg:px-12">
-			<section className="page-enter mb-10 max-w-2xl sm:mb-14">
+		<main className="mx-auto w-full px-5 py-12 sm:px-8 sm:py-16 md:px-12">
+			<section className="page-enter mb-10 mx-auto max-w-7xl sm:mb-14">
 				<h1 className="font-serif text-4xl tracking-tight text-foreground sm:text-5xl lg:text-6xl">
 					{theme.label}
 				</h1>

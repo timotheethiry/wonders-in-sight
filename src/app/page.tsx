@@ -25,7 +25,7 @@ export default function Home() {
 			<section
 				id="galerie"
 				aria-label="Sélection de photographies"
-				className="px-3 py-5 sm:px-5 sm:py-7 lg:px-8"
+				className="px-5 pt-7 sm:px-8 sm:pt-7 md:px-12"
 			>
 				<Suspense fallback={<GallerySkeleton />}>
 					<GalleryContent />
