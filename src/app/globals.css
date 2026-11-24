@@ -49,10 +49,15 @@ header,
 nav,
 main,
 footer,
-article,
-button {
+article {
 	transition-property: background-color, color, border-color;
 	transition-duration: 1000ms;
+	transition-timing-function: ease;
+}
+
+button {
+	transition-property: background-color, color, border-color;
+	transition-duration: 500ms;
 	transition-timing-function: ease;
 }
 

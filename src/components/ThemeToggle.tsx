@@ -52,7 +52,7 @@ export default function ThemeToggle() {
 				theme === 'dark' ? 'Activer le thème clair' : 'Activer le thème sombre'
 			}
 			title={theme === 'dark' ? 'Thème clair' : 'Thème sombre'}
-			className="inline-flex size-9 items-center justify-center rounded-full text-muted transition-colors hover:bg-surface hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2"
+			className="inline-flex size-9 items-center justify-center rounded-full text-muted hover:bg-surface hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2"
 		>
 			{theme === 'dark' ? (
 				<svg
