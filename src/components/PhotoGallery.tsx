@@ -70,7 +70,7 @@ export default function PhotoGallery({ photos }: PhotoGalleryProps) {
 				{photos.map((photo) => (
 					<article
 						key={photo.id}
-						className="mb-6 break-inside-avoid sm:mb-5 md:mb-6 lg:mb-8 xl:mb-10"
+						className="mb-6 break-inside-avoid drop-shadow-lg sm:mb-5 md:mb-6 lg:mb-8 xl:mb-10"
 					>
 						<button
 							type="button"
@@ -99,11 +99,11 @@ export default function PhotoGallery({ photos }: PhotoGalleryProps) {
 					event.preventDefault();
 					closePhoto();
 				}}
-				className={`m-auto h-fit max-h-[90dvh] max-w-[95vw] overflow-hidden bg-transparent p-0 text-white ${isVisible ? 'is-visible' : ''} ${isClosing ? 'is-closing' : ''}`}
+				className={`m-auto h-fit max-h-[90dvh] max-w-[95vw] overflow-hidden bg-transparent text-white ${isVisible ? 'is-visible' : ''} ${isClosing ? 'is-closing' : ''} px-2 sm:p-0`}
 				aria-label="Photographie agrandie"
 			>
 				{selectedPhoto && (
-					<div className="flex max-h-[90dvh] w-[95vw] flex-col md:w-fit">
+					<div className="flex max-h-[90dvh] max-w-[95vw] flex-col lg:w-fit">
 						<button
 							type="button"
 							onClick={closePhoto}
@@ -115,20 +115,20 @@ export default function PhotoGallery({ photos }: PhotoGalleryProps) {
 
 						<div
 							className={`flex min-h-0 flex-1 flex-col gap-4 overflow-hidden ${selectedPhoto.narrative
-								? 'md:flex-row md:gap-8'
-								: 'md:items-start'
+								? 'lg:flex-row md:gap-8'
+								: 'lg:items-start'
 								}`}
 						>
-							<div className="flex min-h-0 shrink-0 items-center justify-center md:flex-1">
+							<div className="flex min-h-0 shrink-0 items-center justify-center lg:flex-1">
 								<img
 									src={selectedPhoto.imageFull}
 									alt={selectedPhoto.alt}
-									className="block max-h-[60dvh] max-w-full object-contain md:max-h-[75dvh]"
+									className="block sm:max-h-[50dvh] md:max-h-[60dvh] max-w-full object-contain lg:max-h-[75dvh]"
 								/>
 							</div>
 
 							<div
-								className={`flex min-h-0 flex-1 flex-col ${selectedPhoto.narrative ? 'md:w-[22rem] md:flex-none' : ''
+								className={`flex min-h-0 flex-1 flex-col ${selectedPhoto.narrative ? 'lg:w-[22rem] lg:flex-none' : ''
 									}`}
 							>
 								<div className="mb-4 shrink-0">
@@ -143,7 +143,7 @@ export default function PhotoGallery({ photos }: PhotoGalleryProps) {
 								</div>
 
 								{selectedPhoto.narrative && (
-									<div className="min-h-0 flex-1 overflow-y-auto overscroll-contain pr-2">
+									<div className="min-h-0 flex-1 pr-2 md:overflow-y-auto md:overscroll-contain">
 										<p className="max-w-pros text-left text-sm leading-7 text-white/70">
 											{selectedPhoto.narrative}
 										</p>
